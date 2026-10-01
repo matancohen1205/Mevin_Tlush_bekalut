@@ -252,3 +252,6 @@ button.row:disabled { opacity: 0.6; cursor: default; }
 .switch-row input[type="checkbox"]:checked { background: var(--primary); }
 .switch-row input[type="checkbox"]:checked::after { inset-inline-start: 21px; }
 .chip.danger { margin-top: var(--s4); color: var(--heart); }
+.form-msg { margin-top: var(--s3); font-size: 14px; color: var(--text-dim); }
+.form-msg.err { color: #c0455f; font-weight: 600; }
+:root[data-theme="dark"] .form-msg.err { color: #ff9db3; }

@@ -24,7 +24,7 @@ src/
 | טבלה | שדות עיקריים |
 |---|---|
 | `profiles` | id (=auth.uid), handle, display_name, avatar_url, bio, is_private, created_at |
-| `tracks` | id, provider, provider_track_id, title, artist, album, artwork_url, preview_url, country, genre, duration_ms |
+| `liked_tracks` / `playlist_tracks` | שיר נשמר כ-snapshot ב-`track jsonb` (במקום טבלת tracks משותפת), כך שאין תלות בספק המוזיקה |
 | `playlists` | id, owner_id, title, description, cover_url, visibility (`public`/`private`), is_collaborative |
 | `playlist_tracks` | playlist_id, track_id, position, added_by, added_at |
 | `liked_tracks` | user_id, track_id, created_at |

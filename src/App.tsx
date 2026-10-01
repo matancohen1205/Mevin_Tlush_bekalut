@@ -12,6 +12,8 @@ import { Notifications } from "./pages/Notifications";
 import { Profile } from "./pages/Profile";
 import { Search } from "./pages/Search";
 import { UserProfile } from "./pages/UserProfile";
+import { AuthScreen } from "./components/AuthScreen";
+import { AuthProvider, useAuth } from "./state/auth";
 import { LibraryProvider } from "./state/library";
 import { PlayerProvider } from "./state/player";
 import { PrefsProvider } from "./state/prefs";
@@ -41,6 +43,9 @@ function Shell() {
   const [theme, toggleTheme] = useTheme();
   const { route, setRoute } = useUi();
   const { unread } = useSocial();
+  const auth = useAuth();
+  if (auth.enabled && auth.loading) return null;
+  if (auth.enabled && !auth.userId && !auth.guest) return <AuthScreen />;
   const themeBtn = (
     <button className="icon-btn" onClick={toggleTheme} aria-label={theme === "dark" ? "מצב בהיר" : "מצב כהה"}>
       <Icon name={theme === "dark" ? "sun" : "moon"} />
@@ -67,6 +72,7 @@ function Shell() {
 
 export function App() {
   return (
+    <AuthProvider>
     <PrefsProvider>
       <UiProvider>
         <LibraryProvider>
@@ -78,5 +84,6 @@ export function App() {
         </LibraryProvider>
       </UiProvider>
     </PrefsProvider>
+    </AuthProvider>
   );
 }

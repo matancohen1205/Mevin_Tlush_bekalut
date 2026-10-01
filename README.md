@@ -21,3 +21,10 @@ npm run build    # בדיקת טיפוסים + build
 > הקהילה רצה כרגע על `localStorage` עם משתמשים פיקטיביים ותגובות מדומות (`src/services/seed.ts`, `src/state/social.tsx`). כל פעולה ממופה לטבלה ב-`docs/ARCHITECTURE.md`, כך שהחיבור ל-Supabase יחליף רק את שכבת ה-state.
 
 תצוגה חיה בקובץ בודד: `npm run build:preview`.
+
+## חיבור ל-Supabase
+1. ב-Supabase → SQL Editor: הדביקו והריצו את [`supabase/schema.sql`](supabase/schema.sql).
+2. העתיקו `.env.example` ל-`.env.local` והוסיפו את ה-anon key (לעולם לא את service_role).
+3. `npm run dev`. בלי מפתחות האפליקציה רצה מקומית כמו קודם.
+
+כרגע בענן: התחברות (אימייל+סיסמה), שירים אהובים ופלייליסטים. הקהילה (פיד, עוקבים, תגובות, התראות) עדיין על נתוני דמו; הטבלאות וכללי ההרשאות שלה כבר ב-schema.sql.

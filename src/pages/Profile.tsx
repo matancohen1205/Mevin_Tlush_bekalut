@@ -4,6 +4,7 @@ import { Icon } from "../components/Icon";
 import { PostCard } from "../components/PostCard";
 import { useLibrary } from "../state/library";
 import { usePlayer } from "../state/player";
+import { useAuth } from "../state/auth";
 import { useSocial } from "../state/social";
 import { useUi } from "../state/ui";
 import type { Track } from "../types";
@@ -26,6 +27,7 @@ export function Profile({ themeBtn }: { themeBtn: React.ReactNode }) {
   const soc = useSocial();
   const lib = useLibrary();
   const { setSheet, showToast } = useUi();
+  const auth = useAuth();
   const me = soc.me;
   const myPosts = soc.posts.filter((p) => p.authorId === "me");
   const artists = useMemo(() => {
@@ -79,6 +81,12 @@ export function Profile({ themeBtn }: { themeBtn: React.ReactNode }) {
           const u = soc.profileOf(id)!;
           return <div key={id} className="row"><Avatar user={u} size={36} /><span className="meta"><div className="t">{u.name}</div></span><button className="chip" onClick={() => soc.unblock(id)}>בטל חסימה</button></div>;
         })}
+        {auth.enabled && (
+          <div className="switch-row">
+            <span><strong>חשבון</strong><span className="muted" dir="ltr">{auth.email ?? "אורח – הנתונים רק במכשיר הזה"}</span></span>
+            {auth.userId ? <button className="chip" onClick={auth.signOut}>התנתקות</button> : <button className="chip" onClick={auth.leaveGuest}>התחברות</button>}
+          </div>
+        )}
         <button className="chip danger" onClick={() => { soc.reset(); showToast("נתוני הקהילה אופסו"); }}>איפוס נתוני הדמו של הקהילה</button>
       </section>
     </main>
