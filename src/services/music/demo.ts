@@ -49,7 +49,12 @@ export const demoProvider: MusicProvider = {
     return delay([...local, ...rest].slice(0, limit));
   },
   search: async (query, _c, limit = 20) => {
-    const q = query.trim().toLowerCase();
-    return delay(DEMO_TRACKS.filter((t) => `${t.title} ${t.artist} ${t.genre}`.toLowerCase().includes(q)).slice(0, limit));
+    const words = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    const score = (t: Track) => {
+      const hay = `${t.title} ${t.artist} ${t.genre}`.toLowerCase();
+      return words.filter((w) => hay.includes(w)).length;
+    };
+    const hits = DEMO_TRACKS.filter((t) => score(t) > 0).sort((a, b) => score(b) - score(a));
+    return delay(hits.slice(0, limit));
   },
 };

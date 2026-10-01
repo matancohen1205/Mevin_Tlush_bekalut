@@ -19,3 +19,12 @@ export interface Country {
   name: string;
   flag: string;
 }
+
+export interface Playlist {
+  id: string;
+  title: string;
+  description: string;
+  visibility: "public" | "private";
+  tracks: Track[];
+  createdAt: number;
+}

@@ -4,6 +4,11 @@ import { FullPlayer } from "./components/FullPlayer";
 import { Icon } from "./components/Icon";
 import { MiniPlayer } from "./components/MiniPlayer";
 import { he } from "./i18n/he";
+import { Onboarding } from "./components/Onboarding";
+import { Sheets } from "./components/Sheets";
+import { Search } from "./pages/Search";
+import { PrefsProvider } from "./state/prefs";
+import { UiProvider } from "./state/ui";
 import { Home } from "./pages/Home";
 import { Library } from "./pages/Library";
 import { Soon } from "./pages/Soon";
@@ -31,22 +36,27 @@ function useTheme(): [Theme, () => void] {
 export function App() {
   const [tab, setTab] = useState<Tab>("home");
   const [theme, toggleTheme] = useTheme();
+  const themeBtn = (
+    <button className="icon-btn" onClick={toggleTheme} aria-label={theme === "dark" ? "מצב בהיר" : "מצב כהה"}>
+      <Icon name={theme === "dark" ? "sun" : "moon"} />
+    </button>
+  );
 
   return (
-    <LibraryProvider>
+    <PrefsProvider><UiProvider><LibraryProvider>
       <PlayerProvider>
         <div className="app">
-          <button className="icon-btn theme-toggle" style={{ zIndex: 5 }} onClick={toggleTheme} aria-label={theme === "dark" ? "מצב בהיר" : "מצב כהה"}>
-            <Icon name={theme === "dark" ? "sun" : "moon"} />
-          </button>
-          {tab === "home" && <Home />}
+          {tab === "home" && <Home themeBtn={themeBtn} />}
+          {tab === "search" && <Search />}
           {tab === "library" && <Library />}
-          {(tab === "search" || tab === "community" || tab === "profile") && <Soon title={he.nav[tab]} />}
+          {(tab === "community" || tab === "profile") && <Soon title={he.nav[tab]} themeBtn={themeBtn} />}
           <MiniPlayer />
           <BottomNav tab={tab} onChange={setTab} />
           <FullPlayer />
+          <Sheets />
+          <Onboarding />
         </div>
       </PlayerProvider>
-    </LibraryProvider>
+    </LibraryProvider></UiProvider></PrefsProvider>
   );
 }

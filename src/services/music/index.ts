@@ -3,7 +3,7 @@ import { demoProvider } from "./demo";
 import { itunesProvider } from "./itunes";
 import type { MusicProvider } from "./provider";
 
-export { COUNTRIES, MOODS } from "./provider";
+export { COUNTRIES, GENRES, MOODS } from "./provider";
 
 export interface Result {
   tracks: Track[];

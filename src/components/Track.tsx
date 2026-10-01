@@ -1,6 +1,7 @@
 import type { Track } from "../types";
 import { useLibrary } from "../state/library";
 import { usePlayer } from "../state/player";
+import { useUi } from "../state/ui";
 import { he } from "../i18n/he";
 import { Icon } from "./Icon";
 import { Waveform } from "./Waveform";
@@ -16,9 +17,10 @@ export function TrackCard({ track, queue }: { track: Track; queue: Track[] }) {
   );
 }
 
-export function TrackRow({ track, queue, rank }: { track: Track; queue: Track[]; rank?: number }) {
+export function TrackRow({ track, queue, rank, noAdd }: { track: Track; queue: Track[]; rank?: number; noAdd?: boolean }) {
   const { play, current, playing } = usePlayer();
   const { isLiked, toggleLike } = useLibrary();
+  const { setSheet } = useUi();
   const active = current?.id === track.id;
   const liked = isLiked(track.id);
   return (
@@ -31,6 +33,11 @@ export function TrackRow({ track, queue, rank }: { track: Track; queue: Track[];
           <div className="a">{track.artist}</div>
         </span>
       </button>
+      {!noAdd && (
+        <button className="icon-btn" onClick={() => setSheet({ kind: "add", track })} aria-label="הוסף לפלייליסט">
+          <Icon name="plus" />
+        </button>
+      )}
       <button className={`icon-btn ${liked ? "on" : ""}`} onClick={() => toggleLike(track)} aria-pressed={liked} aria-label={liked ? he.player.unlike : he.player.like}>
         <Icon name="heart" fill={liked} />
       </button>
