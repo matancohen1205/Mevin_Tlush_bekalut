@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wavely promo stage</title>
+<style>
+/* fonts are copied next to this page by render.cjs (./fonts) */
+@font-face { font-family: "Poppins"; font-weight: 400; src: url(./fonts/poppins-latin-400-normal.woff2); }
+@font-face { font-family: "Poppins"; font-weight: 500; src: url(./fonts/poppins-latin-500-normal.woff2); }
+@font-face { font-family: "Poppins"; font-weight: 600; src: url(./fonts/poppins-latin-600-normal.woff2); }
+@font-face { font-family: "Poppins"; font-weight: 700; src: url(./fonts/poppins-latin-700-normal.woff2); }
+:root { --ink: #16324f; --blue: #2a63a0; --sky: #5ba8e6; --ease: cubic-bezier(0.22, 1, 0.36, 1); }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { width: 1920px; height: 1080px; overflow: hidden; position: relative; font-family: "Poppins", system-ui, sans-serif; color: var(--ink);
+  background: linear-gradient(135deg, #eaf6ff 0%, #bfe3f7 48%, #7fbdea 100%); }
+
+.blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.55; animation: drift 16s ease-in-out infinite alternate; }
+.b1 { width: 700px; height: 700px; left: -160px; top: -200px; background: #a8d8f0; }
+.b2 { width: 640px; height: 640px; right: -120px; bottom: -220px; background: #5ba8e6; animation-duration: 20s; }
+.b3 { width: 420px; height: 420px; left: 820px; top: 380px; background: #cdebfa; animation-duration: 13s; }
+@keyframes drift { from { transform: translate(0, 0) scale(1); } to { transform: translate(80px, 50px) scale(1.15); } }
+
+/* wave lines along the bottom */
+.waves { position: absolute; left: 0; right: 0; bottom: 0; height: 220px; opacity: 0.5; }
+.waves path { fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; }
+
+.copy { position: absolute; left: 150px; top: 50%; width: 860px; transform: translateY(-54%); transition: left 0.9s var(--ease), width 0.9s var(--ease), transform 0.9s var(--ease), text-align 0s; }
+.kicker { font-size: 26px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600; color: var(--blue); height: 36px; opacity: 0; animation: fade 0.6s forwards; }
+.title { font-size: 96px; line-height: 1.04; font-weight: 700; margin-top: 12px; letter-spacing: -0.02em; }
+.title .w { display: inline-block; opacity: 0; transform: translateY(46px); animation: up 0.8s var(--ease) forwards; margin-inline-end: 0.28em; }
+.sub { margin-top: 34px; font-size: 36px; line-height: 1.4; color: #2c4a68; max-width: 760px; opacity: 0; animation: fade 0.8s 0.7s forwards; }
+@keyframes up { to { opacity: 1; transform: none; } }
+@keyframes fade { to { opacity: 1; } }
+
+body.center .copy { left: 160px; width: 1600px; text-align: center; transform: translateY(-50%); }
+body.center .sub { margin-inline: auto; max-width: 1100px; }
+body.center .title { font-size: 150px; }
+.logo { display: none; width: 150px; height: 150px; margin: 0 auto 10px; border-radius: 42px; box-shadow: 0 30px 60px rgba(42, 99, 160, 0.35); animation: pop 0.9s var(--ease) both; }
+body.center .logo { display: block; }
+@keyframes pop { from { transform: scale(0.3) rotate(-18deg); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* phone */
+.phone { position: absolute; left: 1240px; top: 100px; width: 418px; height: 872px; border-radius: 64px; background: #16324f; padding: 14px;
+  box-shadow: 0 50px 100px rgba(22, 50, 79, 0.4), inset 0 0 0 2px rgba(255, 255, 255, 0.12); transform-origin: 50% 60%;
+  transition: transform 1s var(--ease), opacity 0.8s ease; }
+.phone.hide { opacity: 0; transform: translateX(240px) rotate(6deg) scale(0.86); pointer-events: none; }
+.phone.tilt { transform: perspective(1800px) rotateY(-9deg) rotateX(3deg); }
+.phone .screen { width: 390px; height: 844px; border-radius: 50px; overflow: hidden; background: #fff; position: relative; }
+.phone iframe { width: 390px; height: 844px; border: 0; display: block; }
+.phone::before { content: ""; position: absolute; top: 24px; left: 50%; width: 110px; height: 28px; margin-left: -55px; border-radius: 16px; background: #16324f; z-index: 5; }
+
+/* laptop */
+.laptop { pointer-events: none; position: absolute; left: 1000px; top: 220px; width: 800px; opacity: 0; transform: translateX(160px) scale(0.92); transition: transform 1s var(--ease), opacity 0.8s; }
+.laptop.show { opacity: 1; transform: none; }
+.laptop .lid { border: 12px solid #16324f; border-radius: 22px 22px 0 0; overflow: hidden; background: #fff; box-shadow: 0 40px 80px rgba(22, 50, 79, 0.35); }
+.laptop .lid img { width: 100%; display: block; }
+.laptop .base { height: 22px; background: linear-gradient(#cfd9e4, #98a8ba); border-radius: 0 0 22px 22px; margin: 0 -50px; }
+
+/* progress chips */
+.steps { position: absolute; left: 150px; bottom: 74px; display: flex; gap: 14px; transition: opacity 0.6s; }
+.steps span { padding: 10px 20px; border-radius: 999px; font-size: 20px; font-weight: 600; background: rgba(255, 255, 255, 0.6); color: #4a6682; transition: all 0.5s var(--ease); }
+.steps span.on { background: var(--blue); color: #fff; transform: translateY(-4px); box-shadow: 0 10px 24px rgba(42, 99, 160, 0.35); }
+body.center .steps { opacity: 0; }
+.tags { display: flex; gap: 14px; margin-top: 40px; flex-wrap: wrap; justify-content: inherit; }
+.tags span { background: #fff; padding: 12px 26px; border-radius: 999px; font-size: 26px; font-weight: 600; color: var(--blue); box-shadow: 0 10px 24px rgba(42, 99, 160, 0.18); opacity: 0; animation: up 0.7s var(--ease) forwards; transform: translateY(30px); }
+body.center .tags { justify-content: center; }
+
+.ripple { position: absolute; z-index: 50; width: 84px; height: 84px; border-radius: 50%; border: 4px solid #fff; background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%) scale(0.3); opacity: 0.95; pointer-events: none; animation: rip 0.75s ease-out forwards; box-shadow: 0 6px 20px rgba(22, 50, 79, 0.3); }
+@keyframes rip { to { transform: translate(-50%, -50%) scale(1.25); opacity: 0; } }
+</style>
+</head>
+<body class="center">
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<svg class="waves" viewBox="0 0 1920 220" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0 150 C 240 60, 480 60, 720 130 S 1200 200, 1440 120 S 1800 60, 1920 110"><animate attributeName="d" dur="9s" repeatCount="indefinite" values="M0 150 C 240 60, 480 60, 720 130 S 1200 200, 1440 120 S 1800 60, 1920 110;M0 120 C 240 180, 480 190, 720 110 S 1200 50, 1440 130 S 1800 190, 1920 130;M0 150 C 240 60, 480 60, 720 130 S 1200 200, 1440 120 S 1800 60, 1920 110"/></path>
+  <path d="M0 180 C 300 110, 520 120, 820 170 S 1300 210, 1560 160 S 1800 120, 1920 160" opacity="0.6"/>
+</svg>
+
+<div class="copy">
+  <svg class="logo" viewBox="0 0 64 64"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#7cc0ee"/><stop offset="1" stop-color="#2F6FB0"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lg)"/><path d="M12 34c6-14 10-14 14 0s8 14 13 0 8-12 13-4" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg>
+  <div class="kicker" id="kicker"></div>
+  <div class="title" id="title"></div>
+  <div class="sub" id="sub"></div>
+  <div class="tags" id="tags"></div>
+</div>
+
+<div class="steps" id="steps"><span>Charts</span><span>Player</span><span>Playlists</span><span>Community</span><span>Hebrew + English</span></div>
+
+<div class="phone hide tilt" id="phone"><div class="screen"><iframe id="app" title="Wavely app"></iframe></div></div>
+<div class="laptop" id="laptop"><div class="lid"><img id="desk" alt=""></div><div class="base"></div></div>
+
+<script>
+const q = new URLSearchParams(location.search);
+document.getElementById("app").src = q.get("app") || "http://localhost:4173";
+document.getElementById("desk").src = q.get("desk") || "";
+
+const SCENES = [
+  { mode: "center", kicker: "", title: "Wavely", sub: "Music from every country, in one place.", step: -1 },
+  { kicker: "Discover", title: "Charts from around the world", sub: "Pick a country or a mood, then press play.", step: 0 },
+  { kicker: "Listen", title: "A player that feels alive", sub: "Queue, shuffle, seek and lock-screen controls.", step: 1 },
+  { kicker: "Create", title: "Describe a vibe, get a playlist", sub: "Smart create turns one sentence into songs.", step: 2 },
+  { kicker: "Share", title: "Your music, your people", sub: "A feed with likes, comments and private profiles.", step: 3 },
+  { kicker: "Everywhere", title: "Hebrew and English, RTL ready", sub: "The whole interface flips direction.", step: 4 },
+  { mode: "wide", kicker: "Built right", title: "Installable, accessible, fast", sub: "", tags: ["PWA", "Offline shell", "axe-core clean", "Responsive"], step: -1, laptop: true },
+  { mode: "center", kicker: "", title: "Wavely", sub: "Built with React and TypeScript.", tags: ["Player", "Playlists", "Community", "i18n"], step: -1 },
+];
+
+window.setScene = (i) => {
+  const s = SCENES[i];
+  document.body.className = s.mode === "center" ? "center" : "";
+  const kicker = document.getElementById("kicker");
+  kicker.textContent = s.kicker; kicker.style.animation = "none"; void kicker.offsetWidth; kicker.style.animation = "";
+  const title = document.getElementById("title");
+  title.innerHTML = s.title.split(" ").map((w, k) => `<span class="w" style="animation-delay:${0.12 * k + 0.15}s">${w}</span>`).join("");
+  const sub = document.getElementById("sub");
+  sub.textContent = s.sub; sub.style.animation = "none"; void sub.offsetWidth; sub.style.animation = ""; sub.style.display = s.sub ? "" : "none";
+  document.getElementById("tags").innerHTML = (s.tags || []).map((t, k) => `<span style="animation-delay:${0.8 + 0.15 * k}s">${t}</span>`).join("");
+  document.querySelectorAll("#steps span").forEach((el, k) => el.classList.toggle("on", k === s.step));
+  const phoneOn = i >= 1 && i <= 5;
+  document.getElementById("phone").classList.toggle("hide", !phoneOn);
+  document.getElementById("phone").classList.toggle("tilt", false);
+  document.getElementById("laptop").classList.toggle("show", !!s.laptop);
+};
+
+window.ripple = (x, y) => {
+  const r = document.createElement("div");
+  r.className = "ripple"; r.style.left = x + "px"; r.style.top = y + "px";
+  document.body.appendChild(r);
+  setTimeout(() => r.remove(), 900);
+};
+</script>
+</body>
+</html>

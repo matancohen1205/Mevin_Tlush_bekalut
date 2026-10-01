@@ -3,3 +3,5 @@ dist
 *.local
 dist-preview
 .env.local
+scripts/promo/fonts
+docs/wavely-promo.mp4
