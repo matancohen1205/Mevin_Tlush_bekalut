@@ -1,0 +1,65 @@
+/* Wavely Design System – sky & water */
+:root {
+  /* palette */
+  --sky-50: #f4faff;
+  --sky-100: #e3f2fc;
+  --sky-200: #cdebfa;
+  --sky-300: #a8d8f0;
+  --sky-500: #5ba8e6;
+  --sky-700: #2f6fb0;
+  --ink-900: #16324f;
+  --ink-600: #4a6682;
+
+  /* semantic (light) */
+  --bg: var(--sky-50);
+  --bg-grad: linear-gradient(180deg, #eaf6ff 0%, #f4faff 40%);
+  --surface: #ffffff;
+  --surface-2: var(--sky-100);
+  --glass: rgba(255, 255, 255, 0.72);
+  --border: rgba(47, 111, 176, 0.12);
+  --text: var(--ink-900);
+  --text-dim: var(--ink-600);
+  --primary: var(--sky-500);
+  --primary-strong: var(--sky-700);
+  --accent: var(--sky-300);
+  --on-primary: #ffffff;
+  --brand-grad: linear-gradient(135deg, var(--sky-300), var(--sky-500) 55%, var(--sky-700));
+  --heart: #e0709a;
+
+  /* shape / depth */
+  --r-sm: 12px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --shadow-sm: 0 2px 8px rgba(47, 111, 176, 0.08);
+  --shadow-md: 0 8px 28px rgba(47, 111, 176, 0.14);
+  --shadow-lg: 0 18px 50px rgba(47, 111, 176, 0.22);
+
+  /* spacing (4px scale) */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px;
+
+  /* type */
+  --font-he: "Heebo", system-ui, sans-serif;
+  --font-en: "Poppins", "Heebo", system-ui, sans-serif;
+
+  --nav-h: 64px;
+  --mini-h: 68px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root[data-theme="dark"] {
+  --bg: #0b1e33;
+  --bg-grad: linear-gradient(180deg, #0f2a47 0%, #0b1e33 45%);
+  --surface: #12304f;
+  --surface-2: #17395c;
+  --glass: rgba(18, 48, 79, 0.72);
+  --border: rgba(168, 216, 240, 0.12);
+  --text: #eaf4fc;
+  --text-dim: #9fbad2;
+  --primary: #6db6ee;
+  --primary-strong: #a8d8f0;
+  --accent: #2f6fb0;
+  --on-primary: #0b1e33;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 8px 28px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 18px 50px rgba(0, 0, 0, 0.5);
+}
