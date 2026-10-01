@@ -4,6 +4,7 @@ import { Icon } from "../components/Icon";
 import { PostCard } from "../components/PostCard";
 import { useLibrary } from "../state/library";
 import { usePlayer } from "../state/player";
+import { useInstall } from "../state/install";
 import { useAuth } from "../state/auth";
 import { useSocial } from "../state/social";
 import { useUi } from "../state/ui";
@@ -28,6 +29,7 @@ export function Profile({ themeBtn }: { themeBtn: React.ReactNode }) {
   const lib = useLibrary();
   const { setSheet, showToast } = useUi();
   const auth = useAuth();
+  const { install, ios } = useInstall();
   const me = soc.me;
   const myPosts = soc.posts.filter((p) => p.authorId === "me");
   const artists = useMemo(() => {
@@ -81,6 +83,12 @@ export function Profile({ themeBtn }: { themeBtn: React.ReactNode }) {
           const u = soc.profileOf(id)!;
           return <div key={id} className="row"><Avatar user={u} size={36} /><span className="meta"><div className="t">{u.name}</div></span><button className="chip" onClick={() => soc.unblock(id)}>בטל חסימה</button></div>;
         })}
+        {(install || ios) && (
+          <div className="switch-row">
+            <span><strong>התקנת האפליקציה</strong><span className="muted">{install ? "הוסיפו את Wavely למסך הבית" : "בספארי: שיתוף ← הוספה למסך הבית"}</span></span>
+            {install && <button className="chip" onClick={install}>התקנה</button>}
+          </div>
+        )}
         {auth.enabled && (
           <div className="switch-row">
             <span><strong>חשבון</strong><span className="muted" dir="ltr">{auth.email ?? "אורח – הנתונים רק במכשיר הזה"}</span></span>

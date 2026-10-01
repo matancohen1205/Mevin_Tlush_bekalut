@@ -11,3 +11,8 @@ createRoot(document.getElementById("root")!).render(
     <App />
   </StrictMode>,
 );
+
+// Offline shell. Skipped in dev and wherever service workers are unavailable (e.g. embedded previews).
+if (import.meta.env.PROD && "serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => undefined));
+}
