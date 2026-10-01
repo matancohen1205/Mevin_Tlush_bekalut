@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../state/auth";
+import { useDialog } from "./useDialog";
 import { LangSwitch } from "./LangSwitch";
 import { Logo } from "./Logo";
 import { tr, useLang } from "../i18n";
@@ -7,6 +8,7 @@ import { tr, useLang } from "../i18n";
 export function AuthScreen() {
   useLang();
   const auth = useAuth();
+  const dlg = useDialog<HTMLDivElement>();
   const [mode, setMode] = useState<"in" | "up">("in");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -28,7 +30,7 @@ export function AuthScreen() {
   };
 
   return (
-    <div className="onboard" role="dialog" aria-modal="true" aria-label={tr("התחברות")}>
+    <div ref={dlg} tabIndex={-1} className="onboard" role="dialog" aria-modal="true" aria-label={tr("התחברות")}>
       <form className="onboard-in" onSubmit={submit}>
         <div className="topbar"><div className="logo" lang="en"><Logo /> Wavely</div><LangSwitch /></div>
         <h1>{mode === "in" ? tr("ברוכים השבים") : tr("יוצרים חשבון")}</h1>

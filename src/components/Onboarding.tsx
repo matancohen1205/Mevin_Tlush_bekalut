@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { COUNTRIES, GENRES } from "../services/music";
 import { usePrefs } from "../state/prefs";
+import { useDialog } from "./useDialog";
 import { LangSwitch } from "./LangSwitch";
 import { Logo } from "./Logo";
 import { tr, useLang } from "../i18n";
@@ -8,6 +9,7 @@ import { tr, useLang } from "../i18n";
 export function Onboarding() {
   useLang();
   const prefs = usePrefs();
+  const dlg = useDialog<HTMLDivElement>();
   const [genres, setGenres] = useState<string[]>([]);
   const [country, setCountry] = useState(prefs.country);
   if (prefs.onboarded) return null;
@@ -15,7 +17,7 @@ export function Onboarding() {
   const left = Math.max(0, 3 - genres.length);
 
   return (
-    <div className="onboard" role="dialog" aria-modal="true" aria-label={tr("ברוכים הבאים")}>
+    <div ref={dlg} tabIndex={-1} className="onboard" role="dialog" aria-modal="true" aria-label={tr("ברוכים הבאים")}>
       <div className="onboard-in">
         <div className="topbar"><div className="logo" lang="en"><Logo /> Wavely</div><LangSwitch /></div>
         <h1>{tr("מה מתאים לכם?")}</h1>

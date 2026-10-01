@@ -5,15 +5,17 @@ import { useSocial } from "../state/social";
 import { useUi } from "../state/ui";
 import type { Track } from "../types";
 import { Avatar, timeAgo } from "./Avatar";
+import { useDialog } from "./useDialog";
 import { Icon } from "./Icon";
 import { tr, useLang } from "../i18n";
 
 export function Modal({ title, children }: { title: string; children: ReactNode }) {
   useLang();
   const { setSheet } = useUi();
+  const ref = useDialog<HTMLDivElement>(() => setSheet(null));
   return (
     <div className="overlay" onClick={() => setSheet(null)}>
-      <div className="sheet" role="dialog" aria-modal="true" aria-label={title} onClick={(e) => e.stopPropagation()}>
+      <div ref={ref} tabIndex={-1} className="sheet" role="dialog" aria-modal="true" aria-label={title} onClick={(e) => e.stopPropagation()}>
         <div className="sheet-head">
           <h2>{title}</h2>
           <button className="icon-btn" onClick={() => setSheet(null)} aria-label={tr("סגור")}><Icon name="close" /></button>

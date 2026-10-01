@@ -245,4 +245,5 @@ export const en: Record<string, string> = {
   "הפלייליסט נשמר בספרייה": "Playlist saved to your library",
   "נתוני הקהילה אופסו": "Community data reset",
   "Wavely – מוזיקה מכל העולם": "Wavely – music from around the world",
+  "דלג לתוכן": "Skip to content",
 };

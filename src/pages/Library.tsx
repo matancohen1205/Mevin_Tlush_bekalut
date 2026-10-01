@@ -25,7 +25,7 @@ export function Library() {
   if (open) return <PlaylistView playlist={open} onBack={() => setOpenId(null)} />;
 
   return (
-    <main className="page">
+    <main id="main" tabIndex={-1} className="page">
       <div className="topbar">
         <h1 className="page-title">{tr("הספרייה שלי")}</h1>
         <button className="btn primary" onClick={() => setSheet({ kind: "new" })}><Icon name="plus" size={18} /> {tr("חדש")}</button>
@@ -78,7 +78,7 @@ function PlaylistView({ playlist: p, onBack }: { playlist: Playlist; onBack: () 
   };
 
   return (
-    <main className="page">
+    <main id="main" tabIndex={-1} className="page">
       <button className="icon-btn" onClick={onBack} aria-label={tr("חזרה")}><Icon name="back" /></button>
       <div className="pl-head">
         <Cover tracks={p.tracks} size={120} />

@@ -46,7 +46,7 @@ export function Home({ themeBtn }: { themeBtn: React.ReactNode }) {
   const tracks = charts?.tracks ?? [];
 
   return (
-    <main className="page">
+    <main id="main" tabIndex={-1} className="page">
       <header className="topbar">
         <div className="logo" lang="en">
           <Logo /> Wavely

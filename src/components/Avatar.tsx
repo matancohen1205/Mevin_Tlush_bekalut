@@ -8,7 +8,7 @@ export function Avatar({ user, size = 44 }: { user: Pick<Profile, "name" | "hue"
     <span
       className="avatar"
       aria-hidden="true"
-      style={{ width: size, height: size, fontSize: size * 0.42, background: `linear-gradient(135deg, hsl(${user.hue} 75% 78%), hsl(${user.hue} 65% 46%))` }}
+      style={{ width: size, height: size, fontSize: size * 0.42, background: `linear-gradient(135deg, hsl(${user.hue} 62% 46%), hsl(${user.hue} 65% 34%))` }}
     >
       {initial}
     </span>

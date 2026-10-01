@@ -44,7 +44,7 @@ export function Profile({ themeBtn }: { themeBtn: React.ReactNode }) {
   const pub = lib.playlists.filter((p) => p.visibility === "public");
 
   return (
-    <main className="page">
+    <main id="main" tabIndex={-1} className="page">
       <div className="topbar"><h1 className="page-title">{tr("פרופיל")}</h1>{themeBtn}</div>
 
       <section className="profile-head">

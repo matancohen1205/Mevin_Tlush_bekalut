@@ -1,35 +1,29 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { usePlayer } from "../state/player";
 import { useLibrary } from "../state/library";
 import { Icon } from "./Icon";
 import { Waveform } from "./Waveform";
+import { useDialog } from "./useDialog";
 import { tr, useLang } from "../i18n";
 
 const SOURCE = { itunes: "תצוגה מקדימה של 30 שניות · באדיבות Apple Music", demo: "שיר דמה – ניגון מדומה" } as const;
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 const pct = (v: number, max: number) => ({ "--pct": `${max ? (v / max) * 100 : 0}%` }) as React.CSSProperties;
 
-export function FullPlayer() {
+function FullPlayerOpen() {
   useLang();
   const p = usePlayer();
   const { isLiked, toggleLike } = useLibrary();
   const dragFrom = useRef<number | null>(null);
-  const { expanded, setExpanded } = p;
-
-  useEffect(() => {
-    if (!expanded) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setExpanded(false);
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [expanded, setExpanded]);
+  const dlg = useDialog<HTMLDivElement>(() => p.setExpanded(false));
 
   const t = p.current;
-  if (!p.expanded || !t) return null;
+  if (!t) return null;
   const liked = isLiked(t.id);
   const upcoming = p.queue.map((track, i) => ({ track, i })).filter(({ i }) => i !== p.index);
 
   return (
-    <div className="full" role="dialog" aria-modal="true" aria-label={tr("מתנגן עכשיו")}>
+    <div ref={dlg} tabIndex={-1} className="full" role="dialog" aria-modal="true" aria-label={tr("מתנגן עכשיו")}>
       <div className="backdrop" style={{ backgroundImage: `url("${t.artwork}")` }} />
       <div className="tint" />
 
@@ -101,4 +95,9 @@ export function FullPlayer() {
       <p className="attrib">{tr(SOURCE[t.source])}</p>
     </div>
   );
+}
+
+export function FullPlayer() {
+  const { expanded, current } = usePlayer();
+  return expanded && current ? <FullPlayerOpen /> : null;
 }

@@ -56,6 +56,7 @@ function Shell() {
 
   return (
     <div className="app">
+      <a className="skip-link" href="#main" onClick={(e) => { e.preventDefault(); document.getElementById("main")?.focus(); }}>{tr("דלג לתוכן")}</a>
       {route?.kind === "user" ? <UserProfile id={route.id} />
         : route?.kind === "notifs" ? <Notifications />
         : tab === "home" ? <Home themeBtn={themeBtn} />

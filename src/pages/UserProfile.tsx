@@ -20,7 +20,7 @@ export function UserProfile({ id }: { id: string }) {
   const blocked = soc.blocked.includes(id);
 
   return (
-    <main className="page">
+    <main id="main" tabIndex={-1} className="page">
       <div className="topbar">
         <button className="icon-btn" onClick={() => setRoute(null)} aria-label={tr("חזרה")}><Icon name="back" /></button>
         <button className="icon-btn" onClick={() => setSheet({ kind: "more", userId: id })} aria-label={tr("עוד פעולות")}><Icon name="more" /></button>

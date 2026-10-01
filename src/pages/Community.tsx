@@ -20,7 +20,7 @@ export function Community() {
   const suggestions = SEED_USERS.filter((u) => !soc.following[u.id] && !soc.blocked.includes(u.id));
 
   return (
-    <main className="page">
+    <main id="main" tabIndex={-1} className="page">
       <div className="topbar">
         <h1 className="page-title">{tr("קהילה")}</h1>
         <div className="topbar-actions">

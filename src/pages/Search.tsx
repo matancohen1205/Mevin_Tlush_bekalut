@@ -26,7 +26,7 @@ export function Search() {
   }, [term, country]);
 
   return (
-    <main className="page">
+    <main id="main" tabIndex={-1} className="page">
       <h1 className="page-title">{tr("חיפוש")}</h1>
       <div className="searchbox">
         <Icon name="search" size={20} />
