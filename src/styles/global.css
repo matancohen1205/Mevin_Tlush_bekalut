@@ -208,3 +208,47 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius
 .row-wrap { display: flex; align-items: center; gap: 2px; }
 .grip { cursor: grab; width: 28px; }
 button.row:disabled { opacity: 0.6; cursor: default; }
+
+/* Social */
+.avatar { display: inline-grid; place-items: center; flex: none; border-radius: 50%; color: #fff; font-weight: 800; text-shadow: 0 1px 2px rgba(20,60,110,.3); }
+.topbar-actions { display: flex; align-items: center; gap: var(--s2); }
+.bell, .nav-ic { position: relative; }
+.badge { position: absolute; top: 2px; inset-inline-start: 2px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--heart); color: #fff; font: 700 11px/18px var(--font-he); font-style: normal; text-align: center; }
+.feed { display: grid; gap: var(--s3); }
+.post { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: var(--s4); box-shadow: var(--shadow-sm); }
+.post-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); }
+.who { display: flex; align-items: center; gap: var(--s3); text-align: start; min-width: 0; }
+.who > span:last-child { display: flex; flex-direction: column; min-width: 0; }
+.who .muted { font-size: 12px; }
+.caption { margin-top: var(--s3); line-height: 1.5; }
+.np { display: flex; align-items: center; gap: 8px; margin-top: var(--s3); font-size: 13px; color: var(--primary-strong); font-weight: 600; }
+.attach { display: flex; align-items: center; gap: var(--s3); width: 100%; margin-top: var(--s3); padding: var(--s2); border-radius: var(--r-md); background: var(--surface-2); text-align: start; }
+.attach > img { width: 56px; height: 56px; border-radius: var(--r-sm); object-fit: cover; }
+.attach .meta { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.attach .t { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.attach .a { font-size: 13px; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.play-fab.sm { width: 38px; height: 38px; flex: none; }
+.post-actions { display: flex; gap: var(--s1); margin-top: var(--s3); }
+.act { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 999px; color: var(--text-dim); font-weight: 600; font-size: 14px; transition: background 0.2s; }
+.act:hover { background: var(--surface-2); }
+.act.on { color: var(--heart); }
+.person { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 120px; flex: none; padding: var(--s3); border-radius: var(--r-md); background: var(--surface); border: 1px solid var(--border); text-align: center; }
+.person-link { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 14px; max-width: 100%; }
+.person .muted { font-size: 12px; }
+.comments { display: grid; gap: var(--s3); max-height: 45vh; overflow-y: auto; }
+.comment { display: flex; gap: var(--s3); }
+.comment p { margin-top: 2px; }
+.row.unread { background: var(--surface-2); }
+.profile-head { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; padding-top: var(--s3); }
+.profile-head h2 { font-size: 22px; font-weight: 800; margin-top: 6px; }
+.profile-head p { max-width: 36ch; }
+.stats { display: flex; gap: var(--s5); margin: var(--s3) 0; }
+.stat { display: flex; flex-direction: column; align-items: center; }
+.stat strong { font-size: 18px; }
+.settings .switch-row { display: flex; align-items: center; justify-content: space-between; gap: var(--s4); padding: var(--s3) 0; border-bottom: 1px solid var(--border); }
+.settings .switch-row > span { display: flex; flex-direction: column; }
+.switch-row input[type="checkbox"] { appearance: none; width: 46px; height: 28px; border-radius: 999px; background: var(--sky-200); position: relative; cursor: pointer; transition: background 0.2s; flex: none; }
+.switch-row input[type="checkbox"]::after { content: ""; position: absolute; top: 3px; inset-inline-start: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: var(--shadow-sm); transition: inset-inline-start 0.2s var(--ease); }
+.switch-row input[type="checkbox"]:checked { background: var(--primary); }
+.switch-row input[type="checkbox"]:checked::after { inset-inline-start: 21px; }
+.chip.danger { margin-top: var(--s4); color: var(--heart); }

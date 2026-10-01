@@ -4,23 +4,9 @@ import { useLibrary } from "../state/library";
 import { usePrefs } from "../state/prefs";
 import { useUi } from "../state/ui";
 import { Icon } from "./Icon";
+import { CommentsSheet, ComposeSheet, EditProfileSheet, MoreSheet, Modal } from "./SocialSheets";
 
 const IDEAS = ["נסיעה בלילה עם רוק רגוע", "אימון אנרגטי בקיץ", "ריכוז ולימודים", "ערב רומנטי עם ג׳אז"];
-
-function Modal({ title, children }: { title: string; children: React.ReactNode }) {
-  const { setSheet } = useUi();
-  return (
-    <div className="overlay" onClick={() => setSheet(null)}>
-      <div className="sheet" role="dialog" aria-modal="true" aria-label={title} onClick={(e) => e.stopPropagation()}>
-        <div className="sheet-head">
-          <h2>{title}</h2>
-          <button className="icon-btn" onClick={() => setSheet(null)} aria-label="סגור"><Icon name="close" /></button>
-        </div>
-        {children}
-      </div>
-    </div>
-  );
-}
 
 export function Sheets() {
   const { sheet, toast } = useUi();
@@ -28,6 +14,10 @@ export function Sheets() {
     <>
       {sheet?.kind === "add" && <AddSheet track={sheet.track} />}
       {sheet?.kind === "new" && <NewSheet />}
+      {sheet?.kind === "comments" && <CommentsSheet postId={sheet.postId} />}
+      {sheet?.kind === "compose" && <ComposeSheet />}
+      {sheet?.kind === "editProfile" && <EditProfileSheet />}
+      {sheet?.kind === "more" && <MoreSheet postId={sheet.postId} userId={sheet.userId} />}
       {toast && <div className="toast" role="status">{toast}</div>}
     </>
   );

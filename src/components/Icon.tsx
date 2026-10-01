@@ -24,6 +24,12 @@ const P: Record<string, string> = {
   check: "M5 12.5l4.5 4.5L19 7.5",
   close: "M6 6l12 12M18 6L6 18",
   back: "M15 5l-7 7 7 7",
+  comment: "M4 5h16v11H10l-5 4v-4H4z",
+  bell: "M6 17v-6a6 6 0 0 1 12 0v6l2 2H4zM10 21h4",
+  share: "M12 3v12M7 8l5-5 5 5M5 14v6h14v-6",
+  more: "M5 12h.01M12 12h.01M19 12h.01",
+  flag: "M5 21V4M5 4h12l-2 4 2 4H5",
+  userplus: "M10 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM3 20c0-3.3 3-5 7-5s7 1.7 7 5M19 8v6M16 11h6",
   grip: "M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01",
 };
 

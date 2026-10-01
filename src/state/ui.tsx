@@ -1,10 +1,23 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 import type { Track } from "../types";
 
-export type Sheet = { kind: "add"; track: Track } | { kind: "new" } | null;
+export type Sheet =
+  | { kind: "add"; track: Track }
+  | { kind: "new" }
+  | { kind: "comments"; postId: string }
+  | { kind: "compose" }
+  | { kind: "editProfile" }
+  | { kind: "more"; postId?: string; userId: string }
+  | null;
+
+/** Pages that replace the current tab content (with a back button). */
+export type Route = { kind: "user"; id: string } | { kind: "notifs" } | null;
+
 interface UiState {
   sheet: Sheet;
   setSheet: (s: Sheet) => void;
+  route: Route;
+  setRoute: (r: Route) => void;
   toast: string | null;
   showToast: (m: string) => void;
 }
@@ -17,10 +30,11 @@ export const useUi = () => {
 
 export function UiProvider({ children }: { children: ReactNode }) {
   const [sheet, setSheet] = useState<Sheet>(null);
+  const [route, setRoute] = useState<Route>(null);
   const [toast, setToast] = useState<string | null>(null);
   const showToast = (m: string) => {
     setToast(m);
     setTimeout(() => setToast((t) => (t === m ? null : t)), 2200);
   };
-  return <Ctx.Provider value={{ sheet, setSheet, toast, showToast }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ sheet, setSheet, route, setRoute, toast, showToast }}>{children}</Ctx.Provider>;
 }

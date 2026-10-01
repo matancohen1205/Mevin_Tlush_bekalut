@@ -3,17 +3,20 @@ import { BottomNav, type Tab } from "./components/BottomNav";
 import { FullPlayer } from "./components/FullPlayer";
 import { Icon } from "./components/Icon";
 import { MiniPlayer } from "./components/MiniPlayer";
-import { he } from "./i18n/he";
 import { Onboarding } from "./components/Onboarding";
 import { Sheets } from "./components/Sheets";
-import { Search } from "./pages/Search";
-import { PrefsProvider } from "./state/prefs";
-import { UiProvider } from "./state/ui";
+import { Community } from "./pages/Community";
 import { Home } from "./pages/Home";
 import { Library } from "./pages/Library";
-import { Soon } from "./pages/Soon";
+import { Notifications } from "./pages/Notifications";
+import { Profile } from "./pages/Profile";
+import { Search } from "./pages/Search";
+import { UserProfile } from "./pages/UserProfile";
 import { LibraryProvider } from "./state/library";
 import { PlayerProvider } from "./state/player";
+import { PrefsProvider } from "./state/prefs";
+import { SocialProvider, useSocial } from "./state/social";
+import { UiProvider, useUi } from "./state/ui";
 
 type Theme = "light" | "dark";
 
@@ -33,9 +36,11 @@ function useTheme(): [Theme, () => void] {
   return [theme, () => setTheme((t) => (t === "dark" ? "light" : "dark"))];
 }
 
-export function App() {
+function Shell() {
   const [tab, setTab] = useState<Tab>("home");
   const [theme, toggleTheme] = useTheme();
+  const { route, setRoute } = useUi();
+  const { unread } = useSocial();
   const themeBtn = (
     <button className="icon-btn" onClick={toggleTheme} aria-label={theme === "dark" ? "מצב בהיר" : "מצב כהה"}>
       <Icon name={theme === "dark" ? "sun" : "moon"} />
@@ -43,20 +48,35 @@ export function App() {
   );
 
   return (
-    <PrefsProvider><UiProvider><LibraryProvider>
-      <PlayerProvider>
-        <div className="app">
-          {tab === "home" && <Home themeBtn={themeBtn} />}
-          {tab === "search" && <Search />}
-          {tab === "library" && <Library />}
-          {(tab === "community" || tab === "profile") && <Soon title={he.nav[tab]} themeBtn={themeBtn} />}
-          <MiniPlayer />
-          <BottomNav tab={tab} onChange={setTab} />
-          <FullPlayer />
-          <Sheets />
-          <Onboarding />
-        </div>
-      </PlayerProvider>
-    </LibraryProvider></UiProvider></PrefsProvider>
+    <div className="app">
+      {route?.kind === "user" ? <UserProfile id={route.id} />
+        : route?.kind === "notifs" ? <Notifications />
+        : tab === "home" ? <Home themeBtn={themeBtn} />
+        : tab === "search" ? <Search />
+        : tab === "library" ? <Library />
+        : tab === "community" ? <Community />
+        : <Profile themeBtn={themeBtn} />}
+      <MiniPlayer />
+      <BottomNav tab={tab} badge={{ community: unread }} onChange={(t) => { setRoute(null); setTab(t); }} />
+      <FullPlayer />
+      <Sheets />
+      <Onboarding />
+    </div>
+  );
+}
+
+export function App() {
+  return (
+    <PrefsProvider>
+      <UiProvider>
+        <LibraryProvider>
+          <SocialProvider>
+            <PlayerProvider>
+              <Shell />
+            </PlayerProvider>
+          </SocialProvider>
+        </LibraryProvider>
+      </UiProvider>
+    </PrefsProvider>
   );
 }
