@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
+import { tr } from "../i18n";
 import type { Track } from "../types";
 
 export type Sheet =
@@ -33,8 +34,9 @@ export function UiProvider({ children }: { children: ReactNode }) {
   const [route, setRoute] = useState<Route>(null);
   const [toast, setToast] = useState<string | null>(null);
   const showToast = (m: string) => {
-    setToast(m);
-    setTimeout(() => setToast((t) => (t === m ? null : t)), 2200);
+    const msg = tr(m);
+    setToast(msg);
+    setTimeout(() => setToast((t) => (t === msg ? null : t)), 2200);
   };
   return <Ctx.Provider value={{ sheet, setSheet, route, setRoute, toast, showToast }}>{children}</Ctx.Provider>;
 }

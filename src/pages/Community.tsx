@@ -5,8 +5,10 @@ import { Avatar } from "../components/Avatar";
 import { useSocial } from "../state/social";
 import { useUi } from "../state/ui";
 import { SEED_USERS } from "../services/seed";
+import { tr, useLang } from "../i18n";
 
 export function Community() {
+  useLang();
   const soc = useSocial();
   const { setSheet, setRoute } = useUi();
   const [tab, setTab] = useState<"following" | "discover">("following");
@@ -20,28 +22,28 @@ export function Community() {
   return (
     <main className="page">
       <div className="topbar">
-        <h1 className="page-title">קהילה</h1>
+        <h1 className="page-title">{tr("קהילה")}</h1>
         <div className="topbar-actions">
-          <button className="icon-btn bell" onClick={() => setRoute({ kind: "notifs" })} aria-label={`התראות${soc.unread ? `, ${soc.unread} חדשות` : ""}`}>
+          <button className="icon-btn bell" onClick={() => setRoute({ kind: "notifs" })} aria-label={soc.unread ? tr("התראות, {n} חדשות", { n: soc.unread }) : tr("התראות")}>
             <Icon name="bell" />{soc.unread > 0 && <span className="badge">{soc.unread}</span>}
           </button>
-          <button className="btn primary" onClick={() => setSheet({ kind: "compose" })}><Icon name="plus" size={18} /> שתף</button>
+          <button className="btn primary" onClick={() => setSheet({ kind: "compose" })}><Icon name="plus" size={18} /> {tr("שתף")}</button>
         </div>
       </div>
 
       <div className="seg" role="tablist" style={{ marginTop: 16 }}>
-        <button role="tab" aria-selected={tab === "following"} onClick={() => setTab("following")}>עוקבים</button>
-        <button role="tab" aria-selected={tab === "discover"} onClick={() => setTab("discover")}>גלו</button>
+        <button role="tab" aria-selected={tab === "following"} onClick={() => setTab("following")}>{tr("עוקבים")}</button>
+        <button role="tab" aria-selected={tab === "discover"} onClick={() => setTab("discover")}>{tr("גלו")}</button>
       </div>
 
       {tab === "following" && suggestions.length > 0 && (
         <section className="section">
-          <div className="section-head"><h2>אנשים שאולי תאהבו</h2></div>
+          <div className="section-head"><h2>{tr("אנשים שאולי תאהבו")}</h2></div>
           <div className="hscroll">
             {suggestions.map((u) => (
               <div key={u.id} className="person">
-                <button onClick={() => setRoute({ kind: "user", id: u.id })} className="person-link"><Avatar user={u} size={56} /><strong>{u.name}</strong><span className="muted">@{u.handle}</span></button>
-                <button className="chip" onClick={() => soc.toggleFollow(u.id)}>{soc.following[u.id] ? "בקשה נשלחה" : "עקוב"}</button>
+                <button onClick={() => setRoute({ kind: "user", id: u.id })} className="person-link"><Avatar user={u} size={56} /><strong>{tr(u.name)}</strong><span className="muted">@{u.handle}</span></button>
+                <button className="chip" onClick={() => soc.toggleFollow(u.id)}>{soc.following[u.id] ? tr("בקשה נשלחה") : tr("עקוב")}</button>
               </div>
             ))}
           </div>
@@ -50,7 +52,7 @@ export function Community() {
 
       <section className="section feed">
         {feed.length ? feed.map((p) => <PostCard key={p.id} post={p} />) : (
-          <div className="empty"><div className="big">🌊</div><p>עוד אין מה להציג. עקבו אחרי אנשים או שתפו שיר ראשון.</p></div>
+          <div className="empty"><div className="big">🌊</div><p>{tr("עוד אין מה להציג. עקבו אחרי אנשים או שתפו שיר ראשון.")}</p></div>
         )}
       </section>
     </main>

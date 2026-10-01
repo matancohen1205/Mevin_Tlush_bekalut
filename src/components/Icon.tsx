@@ -42,7 +42,7 @@ interface Props {
 export function Icon({ name, size = 24, fill = false }: Props) {
   const solid = fill || name === "play" || name === "pause";
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" fill={solid ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg className={name === "back" ? "dir-flip" : undefined} width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" fill={solid ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d={P[name]} />
     </svg>
   );

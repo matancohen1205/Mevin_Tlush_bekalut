@@ -1,6 +1,7 @@
 import type { Session } from "@supabase/supabase-js";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { supabase } from "../services/supabase";
+import { tr } from "../i18n";
 
 interface AuthState {
   /** false when no Supabase keys exist: the app is local-only and never asks for login */
@@ -33,7 +34,7 @@ const HE_ERRORS: [RegExp, string][] = [
   [/rate limit|too many/i, "יותר מדי ניסיונות. נסו שוב בעוד כמה דקות."],
   [/failed to fetch|network/i, "אין חיבור לשרת. בדקו את האינטרנט ונסו שוב."],
 ];
-const he = (m: string) => HE_ERRORS.find(([re]) => re.test(m))?.[1] ?? "משהו השתבש. נסו שוב.";
+const he = (m: string) => tr(HE_ERRORS.find(([re]) => re.test(m))?.[1] ?? "משהו השתבש. נסו שוב.");
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);

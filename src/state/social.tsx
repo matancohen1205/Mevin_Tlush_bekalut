@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { DEMO_TRACKS } from "../services/music/demo";
 import { SEED_USERS, seedNotifs, seedPosts } from "../services/seed";
 import type { Comment, Notif, Post, Profile, Track } from "../types";
+import { tr } from "../i18n";
 
 /**
  * Social layer. Runs on localStorage with a simulated community so the whole
@@ -47,7 +48,7 @@ export const useSocial = () => {
   return c;
 };
 
-const ME: Profile = { id: "me", handle: "me", name: "אני", bio: "", hue: 205, isPrivate: false, favArtists: [] };
+const ME: Profile = { id: "me", handle: "me", name: tr("אני"), bio: "", hue: 205, isPrivate: false, favArtists: [] };
 const REPLIES = ["איזה שיר! 🔥", "שמרתי לספרייה", "מושלם לנסיעה", "תודה על השיתוף 💙", "מכיר? זה אחד האהובים עליי"];
 
 function fresh(): Saved {
@@ -113,7 +114,7 @@ export function SocialProvider({ children }: { children: ReactNode }) {
         const b = others[Math.floor(Math.random() * others.length)];
         later(2500, () => { patchPost(id, (x) => ({ ...x, likes: [...x.likes, a.id] })); notify({ type: "like", actorId: a.id, postId: id }); });
         later(6000, () => {
-          const c: Comment = { id: uid(), authorId: b.id, body: REPLIES[Math.floor(Math.random() * REPLIES.length)], createdAt: Date.now() };
+          const c: Comment = { id: uid(), authorId: b.id, body: tr(REPLIES[Math.floor(Math.random() * REPLIES.length)]), createdAt: Date.now() };
           patchPost(id, (x) => ({ ...x, comments: [...x.comments, c] }));
           notify({ type: "comment", actorId: b.id, postId: id });
         });

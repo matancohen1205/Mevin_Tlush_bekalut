@@ -19,6 +19,7 @@ import { PlayerProvider } from "./state/player";
 import { PrefsProvider } from "./state/prefs";
 import { SocialProvider, useSocial } from "./state/social";
 import { UiProvider, useUi } from "./state/ui";
+import { I18nProvider, tr, useLang } from "./i18n";
 
 type Theme = "light" | "dark";
 
@@ -39,6 +40,7 @@ function useTheme(): [Theme, () => void] {
 }
 
 function Shell() {
+  useLang();
   const [tab, setTab] = useState<Tab>("home");
   const [theme, toggleTheme] = useTheme();
   const { route, setRoute } = useUi();
@@ -47,7 +49,7 @@ function Shell() {
   if (auth.enabled && auth.loading) return null;
   if (auth.enabled && !auth.userId && !auth.guest) return <AuthScreen />;
   const themeBtn = (
-    <button className="icon-btn" onClick={toggleTheme} aria-label={theme === "dark" ? "מצב בהיר" : "מצב כהה"}>
+    <button className="icon-btn" onClick={toggleTheme} aria-label={theme === "dark" ? tr("מצב בהיר") : tr("מצב כהה")}>
       <Icon name={theme === "dark" ? "sun" : "moon"} />
     </button>
   );
@@ -73,6 +75,7 @@ function Shell() {
 export function App() {
   return (
     <AuthProvider>
+    <I18nProvider>
     <PrefsProvider>
       <UiProvider>
         <LibraryProvider>
@@ -84,6 +87,7 @@ export function App() {
         </LibraryProvider>
       </UiProvider>
     </PrefsProvider>
+    </I18nProvider>
     </AuthProvider>
   );
 }

@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { COUNTRIES, GENRES, MOODS, music, type Result } from "../services/music";
 import { usePlayer } from "../state/player";
-import { he } from "../i18n/he";
 import { CardSkeletons, RowSkeletons } from "../components/Skeleton";
 import { TrackCard, TrackRow } from "../components/Track";
 import { Icon } from "../components/Icon";
 import { Logo } from "../components/Logo";
 import { usePrefs } from "../state/prefs";
+import { tr, useLang } from "../i18n";
 
 export function Home({ themeBtn }: { themeBtn: React.ReactNode }) {
+  useLang();
   const prefs = usePrefs();
   const [country, setCountry] = useState(prefs.country);
   const [forYou, setForYou] = useState<Result | null>(null);
@@ -54,20 +55,20 @@ export function Home({ themeBtn }: { themeBtn: React.ReactNode }) {
       </header>
 
       <section className="hero section" aria-labelledby="hero-t">
-        <h1 id="hero-t">{he.home.heroTitle}</h1>
-        <p>{he.home.heroText}</p>
+        <h1 id="hero-t">{tr("המוזיקה של העולם, במקום אחד")}</h1>
+        <p>{tr("גלו להיטים מכל מדינה, שמרו אהובים ובנו פלייליסטים.")}</p>
         <button className="btn" disabled={!tracks.length} onClick={() => play(tracks[0], tracks)}>
-          <Icon name="play" size={18} /> {he.home.heroCta}
+          <Icon name="play" size={18} /> {tr("נגן להיטים")}
         </button>
       </section>
 
-      {charts?.offline && <div className="banner" role="status">{he.home.offline}</div>}
+      {charts?.offline && <div className="banner" role="status">{tr("אין חיבור למקור המוזיקה – מוצגים שירי דמה (ניגון מדומה).")}</div>}
 
-      <section className="section" aria-label="מדינות">
-        <div className="chip-row" role="group" aria-label="בחירת מדינה">
+      <section className="section" aria-label={tr("מדינות")}>
+        <div className="chip-row" role="group" aria-label={tr("בחירת מדינה")}>
           {COUNTRIES.map((c) => (
             <button key={c.code} className="chip" aria-pressed={c.code === country} onClick={() => setCountry(c.code)}>
-              {c.flag} {c.name}
+              {c.flag} {tr(c.name)}
             </button>
           ))}
         </div>
@@ -75,17 +76,17 @@ export function Home({ themeBtn }: { themeBtn: React.ReactNode }) {
 
       {prefs.genres.length > 0 && (
         <section className="section">
-          <div className="section-head"><h2>בשבילך</h2></div>
+          <div className="section-head"><h2>{tr("בשבילך")}</h2></div>
           {forYou ? <div className="hscroll">{forYou.tracks.map((t) => <TrackCard key={t.id} track={t} queue={forYou.tracks} />)}</div> : <CardSkeletons />}
         </section>
       )}
 
       <section className="section">
-        <div className="section-head"><h2>{he.home.moods}</h2></div>
-        <div className="chip-row" role="group" aria-label={he.home.moods}>
+        <div className="section-head"><h2>{tr("מצב רוח")}</h2></div>
+        <div className="chip-row" role="group" aria-label={tr("מצב רוח")}>
           {MOODS.map((m) => (
             <button key={m.id} className="chip" aria-pressed={mood === m.id} onClick={() => setMood(mood === m.id ? null : m.id)}>
-              {m.label}
+              {tr(m.label)}
             </button>
           ))}
         </div>
@@ -95,7 +96,7 @@ export function Home({ themeBtn }: { themeBtn: React.ReactNode }) {
       </section>
 
       <section className="section">
-        <div className="section-head"><h2>{he.home.inCountry(name)}</h2></div>
+        <div className="section-head"><h2>{tr("הכי מושמעים · {country}", { country: tr(name) })}</h2></div>
         {charts ? (
           <>
             <div className="hscroll">{tracks.slice(0, 6).map((t) => <TrackCard key={t.id} track={t} queue={tracks} />)}</div>

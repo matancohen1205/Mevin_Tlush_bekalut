@@ -1,14 +1,16 @@
 import { useEffect, useRef } from "react";
 import { usePlayer } from "../state/player";
 import { useLibrary } from "../state/library";
-import { he } from "../i18n/he";
 import { Icon } from "./Icon";
 import { Waveform } from "./Waveform";
+import { tr, useLang } from "../i18n";
 
+const SOURCE = { itunes: "תצוגה מקדימה של 30 שניות · באדיבות Apple Music", demo: "שיר דמה – ניגון מדומה" } as const;
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 const pct = (v: number, max: number) => ({ "--pct": `${max ? (v / max) * 100 : 0}%` }) as React.CSSProperties;
 
 export function FullPlayer() {
+  useLang();
   const p = usePlayer();
   const { isLiked, toggleLike } = useLibrary();
   const dragFrom = useRef<number | null>(null);
@@ -27,13 +29,13 @@ export function FullPlayer() {
   const upcoming = p.queue.map((track, i) => ({ track, i })).filter(({ i }) => i !== p.index);
 
   return (
-    <div className="full" role="dialog" aria-modal="true" aria-label={he.player.nowPlaying}>
+    <div className="full" role="dialog" aria-modal="true" aria-label={tr("מתנגן עכשיו")}>
       <div className="backdrop" style={{ backgroundImage: `url("${t.artwork}")` }} />
       <div className="tint" />
 
       <div className="top">
-        <button className="icon-btn" onClick={() => p.setExpanded(false)} aria-label={he.player.close}><Icon name="down" /></button>
-        <span className="label">{he.player.nowPlaying}</span>
+        <button className="icon-btn" onClick={() => p.setExpanded(false)} aria-label={tr("סגור נגן")}><Icon name="down" /></button>
+        <span className="label">{tr("מתנגן עכשיו")}</span>
         <Waveform playing={p.playing} />
       </div>
 
@@ -46,22 +48,22 @@ export function FullPlayer() {
           <h2>{t.title}</h2>
           <div className="artist">{t.artist}</div>
         </div>
-        <button className={`icon-btn ${liked ? "on" : ""}`} onClick={() => toggleLike(t)} aria-pressed={liked} aria-label={liked ? he.player.unlike : he.player.like}>
+        <button className={`icon-btn ${liked ? "on" : ""}`} onClick={() => toggleLike(t)} aria-pressed={liked} aria-label={liked ? tr("הסר מאהובים") : tr("הוסף לאהובים")}>
           <Icon name="heart" size={28} fill={liked} />
         </button>
       </div>
 
       <div className="seek">
-        <input type="range" min={0} max={p.duration || 1} step={0.1} value={p.position} style={pct(p.position, p.duration)} onChange={(e) => p.seek(+e.target.value)} aria-label="התקדמות" />
+        <input type="range" min={0} max={p.duration || 1} step={0.1} value={p.position} style={pct(p.position, p.duration)} onChange={(e) => p.seek(+e.target.value)} aria-label={tr("התקדמות")} />
         <div className="times"><span>{fmt(p.position)}</span><span>{fmt(p.duration)}</span></div>
       </div>
 
       <div className="controls">
-        <button className={`icon-btn ${p.shuffle ? "active" : ""}`} onClick={p.toggleShuffle} aria-pressed={p.shuffle} aria-label={he.player.shuffle}><Icon name="shuffle" /></button>
-        <button className="icon-btn" onClick={p.prev} aria-label={he.player.prev}><Icon name="prev" size={30} /></button>
-        <button className="play-fab" onClick={p.toggle} aria-label={p.playing ? he.player.pause : he.player.play}><Icon name={p.playing ? "pause" : "play"} size={32} /></button>
-        <button className="icon-btn" onClick={p.next} aria-label={he.player.next}><Icon name="next" size={30} /></button>
-        <button className={`icon-btn ${p.repeat !== "off" ? "active" : ""}`} onClick={p.cycleRepeat} aria-label={`${he.player.repeat}: ${p.repeat}`}>
+        <button className={`icon-btn ${p.shuffle ? "active" : ""}`} onClick={p.toggleShuffle} aria-pressed={p.shuffle} aria-label={tr("ערבוב")}><Icon name="shuffle" /></button>
+        <button className="icon-btn" onClick={p.prev} aria-label={tr("הקודם")}><Icon name="prev" size={30} /></button>
+        <button className="play-fab" onClick={p.toggle} aria-label={p.playing ? tr("השהה") : tr("נגן")}><Icon name={p.playing ? "pause" : "play"} size={32} /></button>
+        <button className="icon-btn" onClick={p.next} aria-label={tr("הבא")}><Icon name="next" size={30} /></button>
+        <button className={`icon-btn ${p.repeat !== "off" ? "active" : ""}`} onClick={p.cycleRepeat} aria-label={`${tr("חזרה")}: ${p.repeat}`}>
           <Icon name="repeat" />
           {p.repeat === "one" && <span style={{ position: "absolute", fontSize: 10, fontWeight: 800 }}>1</span>}
         </button>
@@ -69,12 +71,12 @@ export function FullPlayer() {
 
       <div className="volume">
         <Icon name="volume" size={20} />
-        <input type="range" min={0} max={1} step={0.01} value={p.volume} style={pct(p.volume, 1)} onChange={(e) => p.setVolume(+e.target.value)} aria-label={he.player.volume} />
+        <input type="range" min={0} max={1} step={0.01} value={p.volume} style={pct(p.volume, 1)} onChange={(e) => p.setVolume(+e.target.value)} aria-label={tr("עוצמה")} />
       </div>
 
       {upcoming.length > 0 && (
         <div className="queue">
-          <h3>{he.player.queue}</h3>
+          <h3>{tr("הבא בתור")}</h3>
           <div className="rows">
             {upcoming.map(({ track, i }) => (
               <div
@@ -96,7 +98,7 @@ export function FullPlayer() {
         </div>
       )}
 
-      <p className="attrib">{he.player.source[t.source]}</p>
+      <p className="attrib">{tr(SOURCE[t.source])}</p>
     </div>
   );
 }

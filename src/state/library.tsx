@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { fetchLibrary, removePlaylist, savePlaylist, setLike } from "../services/cloudLibrary";
 import type { Playlist, Track } from "../types";
 import { useAuth } from "./auth";
+import { tr } from "../i18n";
 
 /**
  * Local persistence behind a small interface – swap for Supabase later
@@ -62,7 +63,7 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       toggleLike: (t) => setData((d) => ({ ...d, liked: d.liked.some((x) => x.id === t.id) ? d.liked.filter((x) => x.id !== t.id) : [t, ...d.liked] })),
       createPlaylist: (title, opts = {}) => {
         const id = crypto.randomUUID();
-        setPl((l) => [{ id, title: title.trim() || "פלייליסט חדש", description: opts.description ?? "", visibility: opts.visibility ?? "private", tracks: opts.tracks ?? [], createdAt: Date.now() }, ...l]);
+        setPl((l) => [{ id, title: title.trim() || tr("פלייליסט חדש"), description: opts.description ?? "", visibility: opts.visibility ?? "private", tracks: opts.tracks ?? [], createdAt: Date.now() }, ...l]);
         return id;
       },
       updatePlaylist: (id, p) => patch(id, (pl) => ({ ...pl, ...p })),

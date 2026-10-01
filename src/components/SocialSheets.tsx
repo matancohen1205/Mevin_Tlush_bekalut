@@ -6,15 +6,17 @@ import { useUi } from "../state/ui";
 import type { Track } from "../types";
 import { Avatar, timeAgo } from "./Avatar";
 import { Icon } from "./Icon";
+import { tr, useLang } from "../i18n";
 
 export function Modal({ title, children }: { title: string; children: ReactNode }) {
+  useLang();
   const { setSheet } = useUi();
   return (
     <div className="overlay" onClick={() => setSheet(null)}>
       <div className="sheet" role="dialog" aria-modal="true" aria-label={title} onClick={(e) => e.stopPropagation()}>
         <div className="sheet-head">
           <h2>{title}</h2>
-          <button className="icon-btn" onClick={() => setSheet(null)} aria-label="סגור"><Icon name="close" /></button>
+          <button className="icon-btn" onClick={() => setSheet(null)} aria-label={tr("סגור")}><Icon name="close" /></button>
         </div>
         {children}
       </div>
@@ -23,33 +25,35 @@ export function Modal({ title, children }: { title: string; children: ReactNode 
 }
 
 export function CommentsSheet({ postId }: { postId: string }) {
+  useLang();
   const soc = useSocial();
   const [body, setBody] = useState("");
   const post = soc.posts.find((p) => p.id === postId);
   if (!post) return null;
   return (
-    <Modal title="תגובות">
+    <Modal title={tr("תגובות")}>
       <div className="comments">
-        {post.comments.length === 0 && <p className="muted">עוד אין תגובות. אפשר להיות הראשונים.</p>}
+        {post.comments.length === 0 && <p className="muted">{tr("עוד אין תגובות. אפשר להיות הראשונים.")}</p>}
         {post.comments.map((c) => {
           const a = soc.profileOf(c.authorId);
           return a && (
             <div key={c.id} className="comment">
               <Avatar user={a} size={34} />
-              <div><strong>{a.name}</strong> <span className="muted">{timeAgo(c.createdAt)}</span><p>{c.body}</p></div>
+              <div><strong>{tr(a.name)}</strong> <span className="muted">{timeAgo(c.createdAt)}</span><p>{tr(c.body)}</p></div>
             </div>
           );
         })}
       </div>
       <form className="inline-form" onSubmit={(e) => { e.preventDefault(); if (body.trim()) { soc.addComment(postId, body.trim()); setBody(""); } }}>
-        <input className="input" value={body} onChange={(e) => setBody(e.target.value)} placeholder="כתבו תגובה…" aria-label="תגובה" />
-        <button className="btn primary" disabled={!body.trim()}>שלח</button>
+        <input className="input" value={body} onChange={(e) => setBody(e.target.value)} placeholder={tr("כתבו תגובה…")} aria-label={tr("תגובה")} />
+        <button className="btn primary" disabled={!body.trim()}>{tr("שלח")}</button>
       </form>
     </Modal>
   );
 }
 
 export function ComposeSheet() {
+  useLang();
   const soc = useSocial();
   const lib = useLibrary();
   const { current } = usePlayer();
@@ -71,10 +75,10 @@ export function ComposeSheet() {
   };
 
   return (
-    <Modal title="שיתוף בקהילה">
+    <Modal title={tr("שיתוף בקהילה")}>
       <div className="seg" role="tablist">
-        <button role="tab" aria-selected={kind === "track"} onClick={() => setKind("track")}>שיר</button>
-        <button role="tab" aria-selected={kind === "playlist"} onClick={() => setKind("playlist")}>פלייליסט</button>
+        <button role="tab" aria-selected={kind === "track"} onClick={() => setKind("track")}>{tr("שיר")}</button>
+        <button role="tab" aria-selected={kind === "playlist"} onClick={() => setKind("playlist")}>{tr("פלייליסט")}</button>
       </div>
 
       {kind === "track" ? (
@@ -83,31 +87,32 @@ export function ComposeSheet() {
             {options.map((t) => (
               <button key={t.id} className="row" data-active={track?.id === t.id} onClick={() => setTrack(t)}>
                 <img className="art" src={t.artwork} alt="" />
-                <span className="meta"><div className="t">{t.title}</div><div className="a">{t.artist}{t.id === current?.id ? " · מתנגן עכשיו" : ""}</div></span>
+                <span className="meta"><div className="t">{t.title}</div><div className="a">{t.artist}{t.id === current?.id ? ` · ${tr("מתנגן עכשיו")}` : ""}</div></span>
                 {track?.id === t.id && <Icon name="check" />}
               </button>
             ))}
           </div>
-        ) : <p className="muted" style={{ marginTop: 12 }}>נגנו שיר או סמנו שירים באהבתי כדי לשתף אותם.</p>
+        ) : <p className="muted" style={{ marginTop: 12 }}>{tr("נגנו שיר או סמנו שירים באהבתי כדי לשתף אותם.")}</p>
       ) : lib.playlists.length ? (
         <div className="rows" style={{ marginTop: 12 }}>
           {lib.playlists.map((p) => (
             <button key={p.id} className="row" data-active={plId === p.id} onClick={() => setPlId(p.id)}>
-              <span className="meta"><div className="t">{p.title}</div><div className="a">{p.tracks.length} שירים</div></span>
+              <span className="meta"><div className="t">{p.title}</div><div className="a">{tr("{n} שירים", { n: p.tracks.length })}</div></span>
               {plId === p.id && <Icon name="check" />}
             </button>
           ))}
         </div>
-      ) : <p className="muted" style={{ marginTop: 12 }}>עוד אין לכם פלייליסטים. צרו אחד בספרייה.</p>}
+      ) : <p className="muted" style={{ marginTop: 12 }}>{tr("עוד אין לכם פלייליסטים. צרו אחד בספרייה.")}</p>}
 
-      <label className="lbl" htmlFor="cap">מה תרצו להגיד?</label>
-      <textarea id="cap" className="input" rows={2} value={caption} onChange={(e) => setCaption(e.target.value)} placeholder="הוסיפו כמה מילים (לא חובה)" />
-      <button className="btn primary wide" disabled={!ready} onClick={publish}>פרסם</button>
+      <label className="lbl" htmlFor="cap">{tr("מה תרצו להגיד?")}</label>
+      <textarea id="cap" className="input" rows={2} value={caption} onChange={(e) => setCaption(e.target.value)} placeholder={tr("הוסיפו כמה מילים (לא חובה)")} />
+      <button className="btn primary wide" disabled={!ready} onClick={publish}>{tr("פרסם")}</button>
     </Modal>
   );
 }
 
 export function EditProfileSheet() {
+  useLang();
   const soc = useSocial();
   const { setSheet, showToast } = useUi();
   const [name, setName] = useState(soc.me.name);
@@ -115,19 +120,20 @@ export function EditProfileSheet() {
   const [bio, setBio] = useState(soc.me.bio);
   const clean = handle.trim().replace(/[^a-zA-Z0-9._]/g, "");
   return (
-    <Modal title="עריכת פרופיל">
-      <label className="lbl" htmlFor="pn">שם</label>
+    <Modal title={tr("עריכת פרופיל")}>
+      <label className="lbl" htmlFor="pn">{tr("שם")}</label>
       <input id="pn" className="input" value={name} onChange={(e) => setName(e.target.value)} maxLength={30} />
-      <label className="lbl" htmlFor="ph">שם משתמש (אותיות באנגלית, ספרות, נקודה וקו תחתון)</label>
+      <label className="lbl" htmlFor="ph">{tr("שם משתמש (אותיות באנגלית, ספרות, נקודה וקו תחתון)")}</label>
       <input id="ph" className="input" dir="ltr" value={handle} onChange={(e) => setHandle(e.target.value)} maxLength={20} />
-      <label className="lbl" htmlFor="pb">ביו</label>
+      <label className="lbl" htmlFor="pb">{tr("ביו")}</label>
       <textarea id="pb" className="input" rows={3} value={bio} onChange={(e) => setBio(e.target.value)} maxLength={140} />
-      <button className="btn primary wide" disabled={!name.trim() || !clean} onClick={() => { soc.updateMe({ name: name.trim(), handle: clean, bio: bio.trim() }); showToast("הפרופיל עודכן"); setSheet(null); }}>שמור</button>
+      <button className="btn primary wide" disabled={!name.trim() || !clean} onClick={() => { soc.updateMe({ name: name.trim(), handle: clean, bio: bio.trim() }); showToast("הפרופיל עודכן"); setSheet(null); }}>{tr("שמור")}</button>
     </Modal>
   );
 }
 
 export function MoreSheet({ postId, userId }: { postId?: string; userId: string }) {
+  useLang();
   const soc = useSocial();
   const { setSheet, showToast } = useUi();
   const [step, setStep] = useState<"menu" | "report" | "block">("menu");
@@ -138,26 +144,26 @@ export function MoreSheet({ postId, userId }: { postId?: string; userId: string 
 
   if (step === "report")
     return (
-      <Modal title="דיווח">
-        <p className="muted">למה אתם מדווחים?</p>
+      <Modal title={tr("דיווח")}>
+        <p className="muted">{tr("למה אתם מדווחים?")}</p>
         <div className="rows" style={{ marginTop: 8 }}>
-          {["ספאם", "תוכן פוגעני", "הטרדה", "אחר"].map((r) => <button key={r} className="row" onClick={() => done("הדיווח התקבל, תודה")}>{r}</button>)}
+          {["ספאם", "תוכן פוגעני", "הטרדה", "אחר"].map((r) => <button key={r} className="row" onClick={() => done(tr("הדיווח התקבל, תודה"))}>{tr(r)}</button>)}
         </div>
       </Modal>
     );
   if (step === "block")
     return (
-      <Modal title={`לחסום את ${user.name}?`}>
-        <p className="muted">לא תראו יותר תוכן ממנו/ה, והוא/היא לא יוכלו לעקוב אחריכם. אפשר לבטל בהגדרות הפרטיות.</p>
-        <button className="btn primary wide" onClick={() => { soc.block(userId); done(`${user.name} נחסם/ה`); }}>חסום</button>
+      <Modal title={tr("לחסום את {name}?", { name: tr(user.name) })}>
+        <p className="muted">{tr("לא תראו יותר תוכן ממנו/ה, והוא/היא לא יוכלו לעקוב אחריכם. אפשר לבטל בהגדרות הפרטיות.")}</p>
+        <button className="btn primary wide" onClick={() => { soc.block(userId); done(tr("{name} נחסם/ה", { name: tr(user.name) })); }}>{tr("חסום")}</button>
       </Modal>
     );
   return (
-    <Modal title="עוד פעולות">
+    <Modal title={tr("עוד פעולות")}>
       <div className="rows">
-        {mine && postId && <button className="row" onClick={() => { soc.deletePost(postId); done("השיתוף נמחק"); }}><Icon name="trash" /> מחק שיתוף</button>}
-        {!mine && <button className="row" onClick={() => setStep("report")}><Icon name="flag" /> דווח</button>}
-        {!mine && <button className="row" onClick={() => setStep("block")}><Icon name="close" /> חסום את {user.name}</button>}
+        {mine && postId && <button className="row" onClick={() => { soc.deletePost(postId); done(tr("השיתוף נמחק")); }}><Icon name="trash" /> {tr("מחק שיתוף")}</button>}
+        {!mine && <button className="row" onClick={() => setStep("report")}><Icon name="flag" /> {tr("דווח")}</button>}
+        {!mine && <button className="row" onClick={() => setStep("block")}><Icon name="close" /> {tr("חסום את {name}", { name: tr(user.name) })}</button>}
       </div>
     </Modal>
   );
