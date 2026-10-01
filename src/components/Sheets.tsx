@@ -59,7 +59,7 @@ function AddSheet({ track }: { track: import("../types").Track }) {
 function NewSheet() {
   useLang();
   const { createPlaylist } = useLibrary();
-  const { country } = usePrefs();
+  const { country, source } = usePrefs();
   const { setSheet, showToast } = useUi();
   const [mode, setMode] = useState<"manual" | "ai">("ai");
   const [title, setTitle] = useState("");
@@ -75,7 +75,7 @@ function NewSheet() {
       return setSheet(null);
     }
     setBusy(true);
-    const g = await generatePlaylist(prompt, country);
+    const g = await generatePlaylist(prompt, country, source);
     createPlaylist(title || g.title, { description: tr("נוצר מהתיאור: {prompt}", { prompt }), visibility: vis, tracks: g.tracks });
     showToast(tr("נוצר פלייליסט עם {n} שירים", { n: g.tracks.length }));
     setSheet(null);

@@ -283,3 +283,11 @@ main:focus { outline: none; }
   .card, .card .art { width: 168px; }
   .card .art { height: 168px; }
 }
+
+/* Buffering ring around the play button */
+.play-fab { position: relative; }
+.play-fab[data-busy="true"]::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 3px solid transparent; border-top-color: var(--primary); animation: spin 0.9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.attrib a { color: var(--primary-strong); text-decoration: underline; }
+.source-seg { margin-top: var(--s4); }
+.source-note { margin-top: var(--s2); font-size: 13px; color: var(--text-dim); }

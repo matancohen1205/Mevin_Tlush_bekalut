@@ -1,10 +1,10 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
-interface Prefs { onboarded: boolean; genres: string[]; country: string }
+interface Prefs { onboarded: boolean; genres: string[]; country: string; source: "itunes" | "audius" }
 interface PrefsState extends Prefs { save: (p: Partial<Prefs>) => void }
 
 const KEY = "wavely.prefs.v1";
-const DEFAULT: Prefs = { onboarded: false, genres: [], country: "il" };
+const DEFAULT: Prefs = { onboarded: false, genres: [], country: "il", source: "itunes" };
 const Ctx = createContext<PrefsState | null>(null);
 export const usePrefs = () => {
   const c = useContext(Ctx);

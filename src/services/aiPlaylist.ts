@@ -1,5 +1,5 @@
 import type { Track } from "../types";
-import { music } from "./music";
+import { music, type Source } from "./music";
 
 /**
  * Rule-based playlist builder: maps a free-text description (Hebrew/English)
@@ -31,10 +31,10 @@ export interface Generated {
   offline: boolean;
 }
 
-export async function generatePlaylist(prompt: string, country: string): Promise<Generated> {
+export async function generatePlaylist(prompt: string, country: string, source: Source = "itunes"): Promise<Generated> {
   const terms = KEYWORDS.filter(([re]) => re.test(prompt)).map(([, t]) => t).slice(0, 3);
   if (!terms.length) terms.push(prompt.trim());
-  const results = await Promise.all(terms.map((t) => music.search(t, country, 10)));
+  const results = await Promise.all(terms.map((t) => music.search(t, country, 10, source)));
   const seen = new Set<string>();
   const tracks: Track[] = [];
   // interleave so every requested vibe is represented

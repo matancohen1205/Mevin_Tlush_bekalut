@@ -4,13 +4,15 @@ export interface Track {
   artist: string;
   album?: string;
   artwork: string;
-  /** Direct audio URL. Absent for demo tracks (playback is simulated). */
+  /** Playable audio URL (30s preview or full stream). Demo tracks use `synth:<n>`, resolved by the player. */
   previewUrl?: string;
+  /** true when previewUrl is the full-length track, false for short previews */
+  full?: boolean;
   durationMs: number;
   genre?: string;
   country?: string;
   /** Where the track comes from – shown in the player for attribution. */
-  source: "itunes" | "demo";
+  source: "itunes" | "audius" | "demo";
   sourceUrl?: string;
 }
 

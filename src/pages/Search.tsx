@@ -20,10 +20,10 @@ export function Search() {
     let live = true;
     setLoading(true);
     const id = setTimeout(() => {
-      music.search(term, country, 25).then((r) => { if (live) { setRes(r); setLoading(false); } });
+      music.search(term, country, 25, prefs.source).then((r) => { if (live) { setRes(r); setLoading(false); } });
     }, 350);
     return () => { live = false; clearTimeout(id); };
-  }, [term, country]);
+  }, [term, country, prefs.source]);
 
   return (
     <main id="main" tabIndex={-1} className="page">
@@ -33,11 +33,11 @@ export function Search() {
         <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={tr("שיר, אמן, אלבום או ז׳אנר")} aria-label={tr("חיפוש מוזיקה")} />
         {q && <button className="icon-btn" onClick={() => setQ("")} aria-label={tr("נקה")}><Icon name="close" size={18} /></button>}
       </div>
-      <div className="chip-row" role="group" aria-label={tr("חיפוש לפי מדינה")} style={{ marginTop: 8 }}>
+      {prefs.source === "itunes" && <div className="chip-row" role="group" aria-label={tr("חיפוש לפי מדינה")} style={{ marginTop: 8 }}>
         {COUNTRIES.map((c) => (
           <button key={c.code} className="chip" aria-pressed={c.code === country} onClick={() => setCountry(c.code)}>{c.flag} {tr(c.name)}</button>
         ))}
-      </div>
+      </div>}
 
       {!term ? (
         <section className="section">

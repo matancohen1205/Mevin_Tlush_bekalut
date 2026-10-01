@@ -2,7 +2,7 @@ import type { Track } from "../../types";
 import type { MusicProvider } from "./provider";
 
 /** Soft blue gradient "cover" generated as an SVG data URI – no network needed. */
-function cover(seed: number): string {
+export function cover(seed: number): string {
   const hues = [200, 210, 195, 220, 188, 205];
   const h = hues[seed % hues.length];
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(${h},70%,82%)"/><stop offset="1" stop-color="hsl(${h + 12},65%,52%)"/></linearGradient></defs><rect width="300" height="300" fill="url(#g)"/><circle cx="${90 + seed * 17 % 120}" cy="${80 + seed * 29 % 140}" r="${60 + seed * 7 % 40}" fill="#fff" opacity=".22"/><path d="M0 220c40-30 80 30 150 0s100-20 150 10v70H0z" fill="#fff" opacity=".3"/></svg>`;
@@ -35,8 +35,10 @@ export const DEMO_TRACKS: Track[] = RAW.map(([title, artist, genre, country], i)
   genre,
   country,
   artwork: cover(i),
-  durationMs: (150 + ((i * 23) % 90)) * 1000,
+  previewUrl: `synth:${i}`,
+  durationMs: 45_000,
   source: "demo",
+  full: true,
 }));
 
 const delay = <T,>(v: T) => new Promise<T>((r) => setTimeout(() => r(v), 350));

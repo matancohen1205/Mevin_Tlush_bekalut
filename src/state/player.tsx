@@ -1,5 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { tr } from "../i18n";
+import { synthDataUrl, synthUrl } from "../services/music/synth";
 import type { Track } from "../types";
+import { useUi } from "./ui";
 
 export type RepeatMode = "off" | "all" | "one";
 
@@ -8,6 +11,8 @@ interface PlayerState {
   index: number;
   current: Track | null;
   playing: boolean;
+  /** true while the browser is loading or waiting for more audio */
+  buffering: boolean;
   position: number; // seconds
   duration: number; // seconds
   shuffle: boolean;
@@ -34,32 +39,69 @@ export const usePlayer = () => {
   return c;
 };
 
+/** The URL the <audio> element should load. Demo tracks are synthesized on demand. */
+function synthSeed(t: Track): number | null {
+  const n = t.previewUrl?.startsWith("synth:") ? Number(t.previewUrl.slice(6)) : t.source === "demo" ? Number(t.id.replace("demo-", "")) : NaN;
+  return Number.isFinite(n) ? n : null;
+}
+
+function sourceOf(t: Track): string | null {
+  const u = t.previewUrl;
+  if (u?.startsWith("synth:")) return synthUrl(Number(u.slice(6)));
+  if (u) return u;
+  if (t.source === "demo") {
+    const n = Number(t.id.replace("demo-", ""));
+    if (Number.isFinite(n)) return synthUrl(n); // tracks liked before demo audio existed
+  }
+  return null;
+}
+
 export function PlayerProvider({ children }: { children: ReactNode }) {
+  const { showToast } = useUi();
   const audioRef = useRef<HTMLAudioElement>(null as unknown as HTMLAudioElement);
-  if (!audioRef.current && typeof Audio !== "undefined") audioRef.current = new Audio();
+  if (!audioRef.current && typeof Audio !== "undefined") {
+    audioRef.current = new Audio();
+    audioRef.current.preload = "auto";
+  }
 
   const [queue, setQueue] = useState<Track[]>([]);
   const [index, setIndex] = useState(-1);
   const [playing, setPlaying] = useState(false);
+  const [buffering, setBuffering] = useState(false);
   const [position, setPosition] = useState(0);
+  const [mediaDuration, setMediaDuration] = useState(0);
   const [shuffle, setShuffle] = useState(false);
   const [repeat, setRepeat] = useState<RepeatMode>("off");
   const [volume, setVolumeState] = useState(0.8);
   const [expanded, setExpanded] = useState(false);
 
   const current = queue[index] ?? null;
-  const duration = current ? current.durationMs / 1000 : 0;
-  const simulated = !!current && !current.previewUrl;
+  // real length once the file reports it, the catalogue's figure until then
+  const duration = mediaDuration || (current ? current.durationMs / 1000 : 0);
 
   // refs so audio callbacks always see fresh values
   const live = useRef({ queue, index, shuffle, repeat });
   live.current = { queue, index, shuffle, repeat };
+  const failures = useRef(0);
+  const dataRetry = useRef<string | null>(null);
 
-  const goTo = useCallback((i: number) => {
-    setIndex(i);
+  const restart = useCallback(() => {
+    const a = audioRef.current;
+    a.currentTime = 0;
     setPosition(0);
     setPlaying(true);
+    void a.play().catch(() => setPlaying(false));
   }, []);
+
+  const goTo = useCallback(
+    (i: number) => {
+      if (i === live.current.index) return restart(); // same track again: the source effect won't re-run
+      setIndex(i);
+      setPosition(0);
+      setPlaying(true);
+    },
+    [restart],
+  );
 
   const next = useCallback(() => {
     const { queue, index, shuffle, repeat } = live.current;
@@ -73,6 +115,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     if (repeat === "all") return goTo(0);
     setPlaying(false);
     setPosition(0);
+    audioRef.current.currentTime = 0;
   }, [goTo]);
 
   const prev = useCallback(() => {
@@ -86,65 +129,87 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     goTo(index - 1);
   }, [goTo]);
 
-  const onEnded = useCallback(() => {
-    if (live.current.repeat === "one") {
-      audioRef.current.currentTime = 0;
-      setPosition(0);
-      setPlaying(true);
-      void audioRef.current.play().catch(() => undefined);
-    } else next();
-  }, [next]);
-
   // load the source when the track changes
   useEffect(() => {
     const a = audioRef.current;
-    if (!a) return;
-    if (current?.previewUrl) {
-      a.src = current.previewUrl;
-    } else {
+    if (!a || !current) return;
+    const src = sourceOf(current);
+    setMediaDuration(0);
+    setPosition(0);
+    if (!src) {
+      a.pause();
       a.removeAttribute("src");
       a.load();
+      setBuffering(false);
+      setPlaying(false);
+      showToast(tr("השיר הזה לא זמין לניגון"));
+      return;
     }
+    setBuffering(true);
+    a.src = src;
+    a.load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [current]);
 
-  // play / pause
+  // play / pause (also runs after the source effect above when the track changes)
   useEffect(() => {
     const a = audioRef.current;
-    if (!a || !current) return;
-    if (current.previewUrl) {
-      if (playing) a.play().catch(() => setPlaying(false));
-      else a.pause();
-    }
+    if (!a || !current || !a.src) return;
+    if (playing) {
+      a.play().catch((e: DOMException) => {
+        // Only autoplay blocking is handled here. Aborted loads and unplayable files are
+        // reported by the element's own "error" event, which also skips to the next track.
+        if (e.name !== "NotAllowedError") return;
+        setPlaying(false);
+        showToast(tr("הדפדפן חסם ניגון אוטומטי. לחצו על הפעלה."));
+      });
+    } else a.pause();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playing, current]);
 
   // real audio events
   useEffect(() => {
     const a = audioRef.current;
     if (!a) return;
-    const tu = () => !simulated && setPosition(a.currentTime);
-    const en = () => !simulated && onEnded();
-    a.addEventListener("timeupdate", tu);
-    a.addEventListener("ended", en);
-    return () => {
-      a.removeEventListener("timeupdate", tu);
-      a.removeEventListener("ended", en);
-    };
-  }, [simulated, onEnded]);
-
-  // simulated playback for demo tracks (no audio file)
-  useEffect(() => {
-    if (!simulated || !playing) return;
-    const id = setInterval(() => {
-      setPosition((p) => {
-        if (p + 0.25 >= duration) {
-          queueMicrotask(onEnded);
-          return 0;
+    const on: Record<string, () => void> = {
+      timeupdate: () => setPosition(a.currentTime),
+      durationchange: () => Number.isFinite(a.duration) && a.duration > 0 && setMediaDuration(a.duration),
+      loadedmetadata: () => Number.isFinite(a.duration) && a.duration > 0 && setMediaDuration(a.duration),
+      waiting: () => setBuffering(true),
+      loadstart: () => setBuffering(true),
+      canplay: () => setBuffering(false),
+      playing: () => { setBuffering(false); setPlaying(true); failures.current = 0; },
+      pause: () => { if (!a.ended && !a.seeking) setPlaying(false); },
+      ended: () => {
+        if (live.current.repeat === "one") restart();
+        else next();
+      },
+      error: () => {
+        if (!a.src || a.src === location.href) return; // source was cleared on purpose
+        // Some embedding policies refuse blob: media; retry the generated demo audio once as a data: URL
+        const t = live.current.queue[live.current.index];
+        const seed = t ? synthSeed(t) : null;
+        if (t && seed !== null && a.src.startsWith("blob:") && dataRetry.current !== t.id) {
+          dataRetry.current = t.id;
+          synthDataUrl(seed).then((u) => { if (live.current.queue[live.current.index]?.id === t.id) { a.src = u; void a.play().catch(() => undefined); } });
+          return;
         }
-        return p + 0.25;
-      });
-    }, 250);
-    return () => clearInterval(id);
-  }, [simulated, playing, duration, onEnded]);
+        setBuffering(false);
+        failures.current += 1;
+        const { queue, index } = live.current;
+        // skip unplayable tracks, but never loop forever when everything fails
+        if (failures.current < Math.min(queue.length, 5) && index + 1 < queue.length) {
+          showToast(tr("לא ניתן לנגן את השיר, עוברים לבא"));
+          goTo(index + 1);
+        } else {
+          setPlaying(false);
+          showToast(tr("לא ניתן לנגן את השיר. בדקו את החיבור ונסו שוב."));
+        }
+      },
+    };
+    Object.entries(on).forEach(([k, fn]) => a.addEventListener(k, fn));
+    return () => Object.entries(on).forEach(([k, fn]) => a.removeEventListener(k, fn));
+  }, [next, restart, goTo, showToast]);
 
   useEffect(() => {
     if (audioRef.current) audioRef.current.volume = volume;
@@ -159,36 +224,47 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       album: current.album ?? "",
       artwork: current.artwork.startsWith("http") ? [{ src: current.artwork, sizes: "400x400" }] : [],
     });
-    navigator.mediaSession.setActionHandler("play", () => setPlaying(true));
-    navigator.mediaSession.setActionHandler("pause", () => setPlaying(false));
-    navigator.mediaSession.setActionHandler("nexttrack", next);
-    navigator.mediaSession.setActionHandler("previoustrack", prev);
+    const a = audioRef.current;
+    const handlers: [MediaSessionAction, MediaSessionActionHandler][] = [
+      ["play", () => setPlaying(true)],
+      ["pause", () => setPlaying(false)],
+      ["nexttrack", next],
+      ["previoustrack", prev],
+      ["seekto", (d) => { if (d.seekTime != null) { a.currentTime = d.seekTime; setPosition(d.seekTime); } }],
+    ];
+    handlers.forEach(([k, h]) => { try { navigator.mediaSession.setActionHandler(k, h); } catch { /* unsupported action */ } });
   }, [current, next, prev]);
+
+  useEffect(() => {
+    if (!("mediaSession" in navigator) || !current || !duration) return;
+    try {
+      navigator.mediaSession.setPositionState({ duration, position: Math.min(position, duration), playbackRate: 1 });
+    } catch { /* ignore */ }
+    navigator.mediaSession.playbackState = playing ? "playing" : "paused";
+  }, [current, duration, position, playing]);
 
   const play = useCallback(
     (track: Track, newQueue?: Track[]) => {
+      failures.current = 0;
       const q = newQueue ?? live.current.queue;
       const i = q.findIndex((t) => t.id === track.id);
-      if (i === -1) {
-        setQueue([track]);
-        goTo(0);
-      } else {
-        setQueue(q);
-        goTo(i);
-      }
+      const same = live.current.queue[live.current.index]?.id === track.id;
+      setQueue(i === -1 ? [track] : q);
+      if (same) setPlaying(true); // already loaded: just (re)start it, keep the position
+      else { setIndex(i === -1 ? 0 : i); setPosition(0); setPlaying(true); }
     },
-    [goTo],
+    [],
   );
 
   const value = useMemo<PlayerState>(
     () => ({
-      queue, index, current, playing, position, duration, shuffle, repeat, volume, expanded,
+      queue, index, current, playing, buffering, position, duration, shuffle, repeat, volume, expanded,
       play,
       toggle: () => current && setPlaying((p) => !p),
       next,
       prev,
       seek: (s) => {
-        if (!simulated) audioRef.current.currentTime = s;
+        audioRef.current.currentTime = s;
         setPosition(s);
       },
       setVolume: setVolumeState,
@@ -206,7 +282,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       jumpTo: goTo,
       setExpanded,
     }),
-    [queue, index, current, playing, position, duration, shuffle, repeat, volume, expanded, play, next, prev, simulated, goTo],
+    [queue, index, current, playing, buffering, position, duration, shuffle, repeat, volume, expanded, play, next, prev, goTo],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

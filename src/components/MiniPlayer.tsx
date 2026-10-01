@@ -4,7 +4,7 @@ import { tr, useLang } from "../i18n";
 
 export function MiniPlayer() {
   useLang();
-  const { current, playing, toggle, next, position, duration, setExpanded } = usePlayer();
+  const { current, playing, buffering, toggle, next, position, duration, setExpanded } = usePlayer();
   if (!current) return null;
   return (
     <div className="mini" role="region" aria-label={tr("מתנגן עכשיו")}>
@@ -15,7 +15,7 @@ export function MiniPlayer() {
           <div className="a">{current.artist}</div>
         </span>
       </button>
-      <button className="play-fab" onClick={toggle} aria-label={playing ? tr("השהה") : tr("נגן")}>
+      <button className="play-fab" data-busy={playing && buffering} onClick={toggle} aria-label={playing ? tr("השהה") : tr("נגן")}>
         <Icon name={playing ? "pause" : "play"} size={20} />
       </button>
       <button className="icon-btn" onClick={next} aria-label={tr("הבא")}>

@@ -21,26 +21,26 @@ export function Home({ themeBtn }: { themeBtn: React.ReactNode }) {
   useEffect(() => {
     let live = true;
     setCharts(null);
-    music.charts(country, 12).then((r) => live && setCharts(r));
+    music.charts(country, 12, prefs.source).then((r) => live && setCharts(r));
     return () => { live = false; };
-  }, [country]);
+  }, [country, prefs.source]);
 
   useEffect(() => {
     if (!mood) return setMoodTracks(null);
     let live = true;
     setMoodTracks(null);
     const term = MOODS.find((m) => m.id === mood)!.term;
-    music.search(term, country, 12).then((r) => live && setMoodTracks(r));
+    music.search(term, country, 12, prefs.source).then((r) => live && setMoodTracks(r));
     return () => { live = false; };
-  }, [mood, country]);
+  }, [mood, country, prefs.source]);
 
   useEffect(() => {
     if (!prefs.genres.length) return;
     let live = true;
     const term = prefs.genres.map((g) => GENRES.find((x) => x.id === g)?.term).filter(Boolean).slice(0, 2).join(" ");
-    music.search(term, country, 12).then((r) => live && setForYou(r));
+    music.search(term, country, 12, prefs.source).then((r) => live && setForYou(r));
     return () => { live = false; };
-  }, [prefs.genres, country]);
+  }, [prefs.genres, country, prefs.source]);
 
   const name = COUNTRIES.find((c) => c.code === country)!.name;
   const tracks = charts?.tracks ?? [];
@@ -62,9 +62,15 @@ export function Home({ themeBtn }: { themeBtn: React.ReactNode }) {
         </button>
       </section>
 
-      {charts?.offline && <div className="banner" role="status">{tr("אין חיבור למקור המוזיקה – מוצגים שירי דמה (ניגון מדומה).")}</div>}
+      <div className="seg source-seg" role="radiogroup" aria-label={tr("מקור מוזיקה")}>
+        <button role="radio" aria-checked={prefs.source === "itunes"} aria-selected={prefs.source === "itunes"} onClick={() => prefs.save({ source: "itunes" })}>{tr("להיטים · 30 שניות")}</button>
+        <button role="radio" aria-checked={prefs.source === "audius"} aria-selected={prefs.source === "audius"} onClick={() => prefs.save({ source: "audius" })}>{tr("שירים מלאים · Audius")}</button>
+      </div>
+      <p className="source-note">{prefs.source === "audius" ? tr("שירים מלאים של אמנים עצמאיים, בלי הגבלת זמן. אין מצעד לפי מדינה.") : tr("תצוגה מקדימה של 30 שניות ממצעדי כל מדינה.")}</p>
 
-      <section className="section" aria-label={tr("מדינות")}>
+      {charts?.offline && <div className="banner" role="status">{tr("אין חיבור למקור המוזיקה – מוצגים שירי דמה שנוצרו במחשב.")}</div>}
+
+      {prefs.source === "itunes" && <section className="section" aria-label={tr("מדינות")}>
         <div className="chip-row" role="group" aria-label={tr("בחירת מדינה")}>
           {COUNTRIES.map((c) => (
             <button key={c.code} className="chip" aria-pressed={c.code === country} onClick={() => setCountry(c.code)}>
@@ -72,7 +78,7 @@ export function Home({ themeBtn }: { themeBtn: React.ReactNode }) {
             </button>
           ))}
         </div>
-      </section>
+      </section>}
 
       {prefs.genres.length > 0 && (
         <section className="section">
@@ -96,7 +102,7 @@ export function Home({ themeBtn }: { themeBtn: React.ReactNode }) {
       </section>
 
       <section className="section">
-        <div className="section-head"><h2>{tr("הכי מושמעים · {country}", { country: tr(name) })}</h2></div>
+        <div className="section-head"><h2>{prefs.source === "audius" ? tr("פופולרי עכשיו ב-Audius") : tr("הכי מושמעים · {country}", { country: tr(name) })}</h2></div>
         {charts ? (
           <>
             <div className="hscroll">{tracks.slice(0, 6).map((t) => <TrackCard key={t.id} track={t} queue={tracks} />)}</div>

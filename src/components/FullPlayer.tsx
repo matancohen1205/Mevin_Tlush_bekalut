@@ -6,7 +6,7 @@ import { Waveform } from "./Waveform";
 import { useDialog } from "./useDialog";
 import { tr, useLang } from "../i18n";
 
-const SOURCE = { itunes: "תצוגה מקדימה של 30 שניות · באדיבות Apple Music", demo: "שיר דמה – ניגון מדומה" } as const;
+const SOURCE = { itunes: "תצוגה מקדימה של 30 שניות · באדיבות Apple Music", audius: "שיר מלא · באדיבות Audius", demo: "שיר דמה שנוצר במחשב" } as const;
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 const pct = (v: number, max: number) => ({ "--pct": `${max ? (v / max) * 100 : 0}%` }) as React.CSSProperties;
 
@@ -55,7 +55,7 @@ function FullPlayerOpen() {
       <div className="controls">
         <button className={`icon-btn ${p.shuffle ? "active" : ""}`} onClick={p.toggleShuffle} aria-pressed={p.shuffle} aria-label={tr("ערבוב")}><Icon name="shuffle" /></button>
         <button className="icon-btn" onClick={p.prev} aria-label={tr("הקודם")}><Icon name="prev" size={30} /></button>
-        <button className="play-fab" onClick={p.toggle} aria-label={p.playing ? tr("השהה") : tr("נגן")}><Icon name={p.playing ? "pause" : "play"} size={32} /></button>
+        <button className="play-fab" data-busy={p.playing && p.buffering} onClick={p.toggle} aria-label={p.playing ? tr("השהה") : tr("נגן")} aria-busy={p.playing && p.buffering}><Icon name={p.playing ? "pause" : "play"} size={32} /></button>
         <button className="icon-btn" onClick={p.next} aria-label={tr("הבא")}><Icon name="next" size={30} /></button>
         <button className={`icon-btn ${p.repeat !== "off" ? "active" : ""}`} onClick={p.cycleRepeat} aria-label={`${tr("חזרה")}: ${p.repeat}`}>
           <Icon name="repeat" />
@@ -92,7 +92,10 @@ function FullPlayerOpen() {
         </div>
       )}
 
-      <p className="attrib">{tr(SOURCE[t.source])}</p>
+      <p className="attrib">
+        {tr(SOURCE[t.source])}
+        {t.sourceUrl && <> · <a href={t.sourceUrl} target="_blank" rel="noreferrer">{tr("פתיחה במקור")}</a></>}
+      </p>
     </div>
   );
 }

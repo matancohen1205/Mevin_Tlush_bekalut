@@ -29,6 +29,7 @@ function toTrack(r: ItunesResult, country?: string): Track {
     genre: r.primaryGenreName,
     country: country ?? r.country?.slice(0, 2).toLowerCase(),
     source: "itunes",
+    full: false,
     sourceUrl: r.trackViewUrl,
   };
 }
