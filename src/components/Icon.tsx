@@ -5,7 +5,7 @@ const P: Record<string, string> = {
   community: "M16 11a4 4 0 1 0-8 0M4 20c0-3.3 3.6-5 8-5s8 1.7 8 5M20 8a3 3 0 0 1 0 6",
   profile: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c0-4 3.6-6 8-6s8 2 8 6",
   play: "M7 4.5v15l13-7.5z",
-  pause: "M7 4h4v16H7zM13 4h4v16h-4z",
+  pause: "M6 4h4v16H6zM14 4h4v16h-4z",
   next: "M5 5l10 7-10 7zM18 5v14",
   prev: "M19 5L9 12l10 7zM6 5v14",
   shuffle: "M3 7h4l10 10h4M3 17h4l3-3M14 10l3-3h4M18 4l3 3-3 3M18 14l3 3-3 3",

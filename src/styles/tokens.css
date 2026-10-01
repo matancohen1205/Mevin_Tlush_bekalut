@@ -15,7 +15,7 @@
   --bg-grad: linear-gradient(180deg, #eaf6ff 0%, #f4faff 40%);
   --surface: #ffffff;
   --surface-2: var(--sky-100);
-  --glass: rgba(255, 255, 255, 0.72);
+  --glass: rgba(255, 255, 255, 0.92);
   --border: rgba(47, 111, 176, 0.12);
   --text: var(--ink-900);
   --text-dim: var(--ink-600);
@@ -54,7 +54,7 @@
   --bg-grad: linear-gradient(180deg, #0f2a47 0%, #0b1e33 45%);
   --surface: #12304f;
   --surface-2: #17395c;
-  --glass: rgba(18, 48, 79, 0.72);
+  --glass: rgba(18, 48, 79, 0.92);
   --border: rgba(168, 216, 240, 0.12);
   --text: #eaf4fc;
   --text-dim: #9fbad2;

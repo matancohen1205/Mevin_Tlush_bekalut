@@ -259,4 +259,6 @@ export const en: Record<string, string> = {
   "שירים מלאים של אמנים עצמאיים, בלי הגבלת זמן. אין מצעד לפי מדינה.": "Full songs from independent artists, no time limit. No per-country charts.",
   "תצוגה מקדימה של 30 שניות ממצעדי כל מדינה.": "30-second previews from every country's charts.",
   "פופולרי עכשיו ב-Audius": "Trending on Audius",
+  "Wavely הוא פרויקט תצוגה ללא מטרות רווח ואינו קשור ל-Apple או ל-Audius. תצוגות מקדימות באדיבות Apple Music, שירים מלאים באדיבות Audius, וכל זכויות השירים שמורות ליוצריהם.": "Wavely is a non-profit showcase project and is not affiliated with Apple or Audius. Previews courtesy of Apple Music, full tracks courtesy of Audius; all rights to the songs belong to their creators.",
+  "חזור": "Back",
 };

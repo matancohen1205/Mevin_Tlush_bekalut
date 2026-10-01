@@ -22,7 +22,7 @@ export function UserProfile({ id }: { id: string }) {
   return (
     <main id="main" tabIndex={-1} className="page">
       <div className="topbar">
-        <button className="icon-btn" onClick={() => setRoute(null)} aria-label={tr("חזרה")}><Icon name="back" /></button>
+        <button className="icon-btn" onClick={() => setRoute(null)} aria-label={tr("חזור")}><Icon name="back" /></button>
         <button className="icon-btn" onClick={() => setSheet({ kind: "more", userId: id })} aria-label={tr("עוד פעולות")}><Icon name="more" /></button>
       </div>
 

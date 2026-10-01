@@ -79,7 +79,7 @@ function PlaylistView({ playlist: p, onBack }: { playlist: Playlist; onBack: () 
 
   return (
     <main id="main" tabIndex={-1} className="page">
-      <button className="icon-btn" onClick={onBack} aria-label={tr("חזרה")}><Icon name="back" /></button>
+      <button className="icon-btn" onClick={onBack} aria-label={tr("חזור")}><Icon name="back" /></button>
       <div className="pl-head">
         <Cover tracks={p.tracks} size={120} />
         {editing ? (

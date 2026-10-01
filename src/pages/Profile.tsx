@@ -103,6 +103,7 @@ export function Profile({ themeBtn }: { themeBtn: React.ReactNode }) {
             {auth.userId ? <button className="chip" onClick={auth.signOut}>{tr("התנתקות")}</button> : <button className="chip" onClick={auth.leaveGuest}>{tr("התחברות")}</button>}
           </div>
         )}
+        <p className="about">{tr("Wavely הוא פרויקט תצוגה ללא מטרות רווח ואינו קשור ל-Apple או ל-Audius. תצוגות מקדימות באדיבות Apple Music, שירים מלאים באדיבות Audius, וכל זכויות השירים שמורות ליוצריהם.")}</p>
         <button className="chip danger" onClick={() => { soc.reset(); showToast("נתוני הקהילה אופסו"); }}>{tr("איפוס נתוני הדמו של הקהילה")}</button>
       </section>
     </main>

@@ -20,7 +20,7 @@ export function Notifications() {
 
   return (
     <main id="main" tabIndex={-1} className="page">
-      <button className="icon-btn" onClick={() => setRoute(null)} aria-label={tr("חזרה")}><Icon name="back" /></button>
+      <button className="icon-btn" onClick={() => setRoute(null)} aria-label={tr("חזור")}><Icon name="back" /></button>
       <h1 className="page-title">{tr("התראות")}</h1>
       <section className="section">
         {soc.notifs.length ? (
