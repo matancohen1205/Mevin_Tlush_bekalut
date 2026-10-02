@@ -4,6 +4,7 @@
  * Prerequisites: the app running (e.g. `npm run build && npm run preview`, built WITHOUT Supabase variables so no login screen),
  * `npm i -D playwright` (+ `npx playwright install chromium`), and ffmpeg on PATH.
  *   node scripts/promo/render.cjs            -> docs/wavely-promo.mp4
+ * Narration: needs festival + festvox-us-slt-hts (apt) and ffmpeg, or NARRATION_DIR (see narrate.cjs). Set NARRATION=0 to render without a voice.
  * Environment: APP_URL (default http://localhost:4173), CHROMIUM (path to a chromium binary, optional)
  */
 const { chromium } = require("playwright");
@@ -29,6 +30,16 @@ const appFontCss = [
 ].join("\n");
 
 (async () => {
+  const withVoice = process.env.NARRATION !== "0";
+  let narr = {};
+  if (withVoice) {
+    console.log("0/3 narration");
+    execFileSync("node", [path.join(__dirname, "narrate.cjs"), path.join(TMP, "narr")], { stdio: "inherit" });
+    narr = JSON.parse(fs.readFileSync(path.join(TMP, "narr", "manifest.json"), "utf8"));
+  }
+  const GAP = 0.25, LEAD = 0.5; // pause between sentences, delay after a scene starts
+  const spoken = (i) => (narr[i] || []).reduce((a, c) => a + c.seconds + GAP, 0);
+  const starts = {};   // scene -> seconds since T0
   console.log("1/3 recording");
   const browser = await chromium.launch({ executablePath: process.env.CHROMIUM || undefined });
   const ctx = await browser.newContext({ viewport: { width: 1920, height: 1080 }, locale: "en-US", recordVideo: { dir: TMP, size: { width: 1920, height: 1080 } } });
@@ -48,7 +59,6 @@ const appFontCss = [
   await frame.waitForSelector(".row .t", { timeout: 20000 });
   await frame.addStyleTag({ content: appFontCss });
   await frame.evaluate(() => document.fonts.ready);
-  await page.evaluate(() => window.setScene(0));
   const T0 = Date.now();
   const offset = (T0 - created) / 1000;
   const at = async (s) => { const d = s * 1000 - (Date.now() - T0); if (d > 0) await sleep(d); };
@@ -61,11 +71,21 @@ const appFontCss = [
     await sleep(wait);
     await loc.click({ force: true });
   };
-  const scene = (i) => page.evaluate((k) => window.setScene(k), i);
+  const scene = async (i) => {
+    starts[i] = (Date.now() - T0) / 1000;
+    await page.evaluate((k) => window.setScene(k), i);
+    let t = LEAD * 1000;
+    for (const c of narr[i] || []) {
+      setTimeout(() => page.evaluate((x) => window.setCaption(x), c.text).catch(() => {}), t);
+      t += (c.seconds + GAP) * 1000;
+    }
+    setTimeout(() => page.evaluate(() => window.setCaption("")).catch(() => {}), t + 400);
+  };
 
   // Scenes run one after another. Each lasts at least `min` seconds so captions can be read,
   // longer if its actions take longer. The soundtrack is sized to the real total afterwards.
   const run = async (i, min, actions) => {
+    min = Math.max(min, LEAD + spoken(i) + 0.5);
     const t = Date.now();
     await scene(i);
     await actions();
@@ -73,7 +93,8 @@ const appFontCss = [
     if (rest > 0) await sleep(rest);
   };
 
-  await at(4.5); // intro
+  await scene(0);
+  await at(Math.max(4.5, LEAD + spoken(0) + 0.8)); // intro
 
   await run(1, 6.5, async () => {
     await sleep(900);
@@ -154,8 +175,27 @@ const appFontCss = [
 
   console.log("3/3 encoding");
   fs.mkdirSync(path.dirname(OUT), { recursive: true });
-  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-ss", offset.toFixed(2), "-i", webm, "-i", wav, "-t", String(length),
-    "-vf", "fps=30,format=yuv420p", "-c:v", "libx264", "-preset", "slow", "-crf", "19", "-c:a", "aac", "-b:a", "160k",
-    "-af", `afade=in:st=0:d=1,afade=out:st=${length - 4}:d=4`, "-movflags", "+faststart", OUT]);
+  const clips = [];
+  for (const [i, list] of Object.entries(narr)) {
+    let t = starts[i] + LEAD;
+    for (const c of list) { clips.push({ file: c.file, at: t }); t += c.seconds + GAP; }
+  }
+  const inputs = ["-ss", offset.toFixed(2), "-i", webm, "-i", wav, ...clips.flatMap((c) => ["-i", c.file])];
+  const fades = `afade=in:st=0:d=1,afade=out:st=${length - 4}:d=4`;
+  let filter, map;
+  if (clips.length) {
+    const delayed = clips.map((c, k) => `[${k + 2}:a]adelay=${Math.round(c.at * 1000)}|${Math.round(c.at * 1000)}[c${k}]`).join(";");
+    const labels = clips.map((_, k) => `[c${k}]`).join("");
+    // music ducks under the voice, then both are mixed
+    filter = `${delayed};${labels}amix=inputs=${clips.length}:normalize=0,asplit=2[n1][n2];` +
+      `[1:a][n1]sidechaincompress=threshold=0.02:ratio=10:attack=15:release=450:makeup=1[duck];` +
+      `[duck]volume=0.85[d];[d][n2]amix=inputs=2:normalize=0:duration=first,${fades}[mix]`;
+    map = ["-map", "0:v", "-map", "[mix]"];
+  } else {
+    filter = `[1:a]${fades}[mix]`;
+    map = ["-map", "0:v", "-map", "[mix]"];
+  }
+  execFileSync("ffmpeg", ["-y", "-loglevel", "error", ...inputs, "-filter_complex", filter, ...map, "-t", String(length),
+    "-vf", "fps=30,format=yuv420p", "-c:v", "libx264", "-preset", "slow", "-crf", "19", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", OUT]);
   console.log("done ->", OUT);
 })().catch((e) => { console.error("FAILED:", e); process.exit(1); });
