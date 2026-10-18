@@ -15,4 +15,4 @@
 .tile[aria-pressed="true"]::after { content: "✓"; position: absolute; inset-block-end: 6px; inset-inline-end: 10px; font-size: 18px; }
 .seg { display: flex; padding: 4px; gap: 4px; border-radius: 999px; background: var(--surface-2); }
 .seg button { flex: 1; display: inline-flex; gap: 6px; align-items: center; justify-content: center; padding: 9px 12px; border-radius: 999px; font-weight: 600; font-size: 14px; color: var(--text-dim); }
-.seg button[aria-selected="true"] { background: var(--surface); color: var(--primary-strong); box-shadow: var(--shadow-sm); }
+.seg button[aria-selected="true"], .seg button[aria-checked="true"] { background: var(--surface); color: var(--primary-strong); box-shadow: var(--shadow-sm); }
