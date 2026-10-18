@@ -1,12 +1,12 @@
-import type { Track } from "../types";
-import { music, type Source } from "../services/music";
-
 /**
- * Rule-based playlist builder: maps a free-text description (Hebrew/English)
- * to search terms. It is intentionally isolated so it can later be replaced
- * by an LLM call that returns the same shape.
+ * Pure rules behind "smart create": turn a free-text description (Hebrew or English)
+ * into search terms, and merge the search results into one playlist.
+ * Kept free of I/O so it can later be swapped for an LLM that returns the same shapes.
  */
-const KEYWORDS: [RegExp, string][] = [
+import type { Track } from "../types";
+
+/** keyword pattern → search term sent to the music provider */
+const KEYWORDS: readonly [RegExp, string][] = [
   [/רגוע|שקט|chill|calm|relax/i, "chill acoustic"],
   [/אנרגטי|ספורט|ריצה|אימון|workout|dance|party|מסיבה/i, "dance workout"],
   [/ריכוז|לימודים|עבודה|focus|study|lofi/i, "lofi instrumental"],
@@ -25,28 +25,33 @@ const KEYWORDS: [RegExp, string][] = [
   [/עצוב|געגוע|sad|melancholy/i, "sad ballads"],
 ];
 
-export interface Generated {
-  title: string;
-  tracks: Track[];
-  offline: boolean;
+export const MAX_TERMS = 3;
+export const MAX_TRACKS = 15;
+
+/** Search terms for a description: up to three matched vibes, or the raw text when nothing matches. */
+export function termsFromPrompt(prompt: string): string[] {
+  const terms = KEYWORDS.filter(([re]) => re.test(prompt)).map(([, term]) => term).slice(0, MAX_TERMS);
+  return terms.length ? terms : [prompt.trim()];
 }
 
-export async function generatePlaylist(prompt: string, country: string, source: Source = "itunes"): Promise<Generated> {
-  const terms = KEYWORDS.filter(([re]) => re.test(prompt)).map(([, t]) => t).slice(0, 3);
-  if (!terms.length) terms.push(prompt.trim());
-  const results = await Promise.all(terms.map((t) => music.search(t, country, 10, source)));
+/** Interleaves several result lists (so every vibe is represented), drops duplicates, caps the length. */
+export function interleaveTracks(lists: readonly (readonly Track[])[], limit: number = MAX_TRACKS): Track[] {
   const seen = new Set<string>();
-  const tracks: Track[] = [];
-  // interleave so every requested vibe is represented
-  const max = Math.max(...results.map((r) => r.tracks.length));
-  for (let i = 0; i < max; i++)
-    for (const r of results) {
-      const t = r.tracks[i];
-      if (t && !seen.has(t.id)) {
-        seen.add(t.id);
-        tracks.push(t);
+  const merged: Track[] = [];
+  const longest = Math.max(0, ...lists.map((l) => l.length));
+  for (let i = 0; i < longest; i++)
+    for (const list of lists) {
+      const track = list[i];
+      if (track && !seen.has(track.id)) {
+        seen.add(track.id);
+        merged.push(track);
       }
     }
-  const title = prompt.trim().length > 32 ? prompt.trim().slice(0, 30) + "…" : prompt.trim();
-  return { title, tracks: tracks.slice(0, 15), offline: results.some((r) => r.offline) };
+  return merged.slice(0, limit);
+}
+
+/** Playlist title derived from the description (shortened when long). */
+export function titleFromPrompt(prompt: string, maxLength = 32): string {
+  const text = prompt.trim();
+  return text.length > maxLength ? text.slice(0, maxLength - 2) + "…" : text;
 }
