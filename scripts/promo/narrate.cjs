@@ -15,9 +15,11 @@ const script = JSON.parse(fs.readFileSync(path.join(__dirname, "narration.json")
 const custom = process.env.NARRATION_DIR;
 const manifest = {};
 
+/** Resamples to 44.1 kHz mono, trims low rumble, compresses and normalises loudness. */
 const norm = (src, dst) =>
   execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-i", src, "-ar", "44100", "-ac", "1",
     "-af", "highpass=f=90,acompressor=threshold=-20dB:ratio=3:attack=5:release=80,loudnorm=I=-16:TP=-1.5:LRA=7", dst]);
+/** Duration of an audio file in seconds. */
 const dur = (f) => parseFloat(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", f]).toString());
 
 for (const [scene, sentences] of Object.entries(script)) {

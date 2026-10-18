@@ -1,5 +1,5 @@
 /** Result list for a search: loading skeletons, offline notice, rows, or an empty state. */
-import type { Result } from "../../services/music";
+import type { Result } from "../../state/catalog";
 import { tr, useLang } from "../../i18n";
 import { RowSkeletons } from "../common/Skeleton";
 import { TrackRow } from "../tracks";

@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "build:preview": "vite build -c vite.preview.config.ts",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "check:arch": "node scripts/dev/check-architecture.cjs",
+    "check": "npm run typecheck && npm test && npm run check:arch"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",

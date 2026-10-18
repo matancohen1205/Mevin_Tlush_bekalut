@@ -8,7 +8,7 @@ import { MoodSection } from "../components/home/MoodSection";
 import { SourceSwitch } from "../components/home/SourceSwitch";
 import { Logo } from "../components/common/Logo";
 import { ThemeToggle } from "../components/common/ThemeToggle";
-import { COUNTRIES } from "../services/music";
+import { COUNTRIES } from "../state/catalog";
 import { useCharts } from "../state/catalog";
 import { usePrefs } from "../state/prefs";
 import { tr, useLang } from "../i18n";

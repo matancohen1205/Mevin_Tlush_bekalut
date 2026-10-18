@@ -1,5 +1,6 @@
 const { chromium } = require("playwright");
 const OUT = __dirname + "/../docs/screenshots/";
+/** Hides the offline banner and saves a screenshot of the page. */
 const shot = async (p, name) => { await p.addStyleTag({ content: ".banner{display:none!important}" }); await p.waitForTimeout(800); await p.screenshot({ path: OUT + name + ".png" }); };
 (async () => {
   const b = await chromium.launch({ args: ["--autoplay-policy=no-user-gesture-required"] });

@@ -21,8 +21,10 @@ interface AudiusTrack {
   user: { name: string; handle: string };
 }
 
+/** Small stable hash of a string, used to pick a fallback cover. */
 const hash = (s: string) => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
 
+/** Maps an Audius track to the app's Track (stream URL, best available artwork, attribution link). */
 function toTrack(t: AudiusTrack): Track {
   const art = t.artwork;
   return {
@@ -39,6 +41,7 @@ function toTrack(t: AudiusTrack): Track {
   };
 }
 
+/** GET /v1/tracks/<path>; keeps only streamable tracks and throws when nothing usable came back. */
 async function list(path: string): Promise<Track[]> {
   const res = await fetch(`${HOST}/v1/tracks/${path}${path.includes("?") ? "&" : "?"}app_name=${APP}`);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);

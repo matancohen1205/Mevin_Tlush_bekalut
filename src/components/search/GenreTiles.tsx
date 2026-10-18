@@ -1,6 +1,6 @@
 /** Colourful genre tiles; tapping one starts a search for that genre. */
 import type { CSSProperties } from "react";
-import { GENRES } from "../../services/music";
+import { GENRES } from "../../state/catalog";
 import { tr, useLang } from "../../i18n";
 
 /** Grid of genre shortcuts. */

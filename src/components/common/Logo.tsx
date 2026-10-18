@@ -1,3 +1,4 @@
+/** The Wavely app icon (gradient square with a wave); `size` in pixels. */
 export function Logo({ size = 30 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true">

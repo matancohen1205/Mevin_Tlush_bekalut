@@ -16,6 +16,7 @@ export interface Result {
   offline: boolean;
 }
 
+/** Runs a query on the chosen live source; if it fails, answers from the demo source and flags `offline`. */
 async function withFallback(source: Source, run: (p: MusicProvider) => Promise<Track[]>): Promise<Result> {
   try {
     return { tracks: await run(SOURCES[source]), offline: false };

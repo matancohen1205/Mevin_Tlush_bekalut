@@ -1,5 +1,5 @@
 /** Horizontal chip list for choosing a country. */
-import { COUNTRIES } from "../../services/music";
+import { COUNTRIES } from "../../state/catalog";
 import { tr, useLang } from "../../i18n";
 
 interface Props {

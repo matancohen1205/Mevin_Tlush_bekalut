@@ -2,6 +2,7 @@
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
 
+/** True when Supabase keys were provided at build time. */
 export const isCloudEnabled = (): boolean => !!supabase;
 
 /** Fetches the persisted session, if any. */

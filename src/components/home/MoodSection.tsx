@@ -1,6 +1,6 @@
 /** Mood chips (chill, focus…) and the tracks for the selected one. */
 import { useState } from "react";
-import { MOODS } from "../../services/music";
+import { MOODS } from "../../state/catalog";
 import { useMoodTracks } from "../../state/catalog";
 import { usePrefs } from "../../state/prefs";
 import { tr, useLang } from "../../i18n";

@@ -1,17 +1,21 @@
+/** Supabase calls for the user's library (liked songs and playlists). No React in here. */
 import type { Playlist, Track } from "../../types";
 import { supabase } from "./supabase";
 
 export interface CloudLibrary { liked: Track[]; playlists: Playlist[] }
 
+/** The Supabase client, or an error when keys were not configured. */
 const db = () => {
   if (!supabase) throw new Error("Supabase is not configured");
   return supabase;
 };
+/** Unwraps a Supabase response: throws on error, returns the data otherwise. */
 const ok = <T>(r: { data: T | null; error: { message: string } | null }): T => {
   if (r.error) throw new Error(r.error.message);
   return r.data as T;
 };
 
+/** Loads the user's liked songs and playlists (with their tracks, in order). */
 export async function fetchLibrary(uid: string): Promise<CloudLibrary> {
   const [likes, pls] = await Promise.all([
     db().from("liked_tracks").select("track").eq("user_id", uid).order("created_at", { ascending: false }),
@@ -30,6 +34,7 @@ export async function fetchLibrary(uid: string): Promise<CloudLibrary> {
   };
 }
 
+/** Likes or unlikes a track. */
 export async function setLike(uid: string, track: Track, liked: boolean) {
   if (liked) ok(await db().from("liked_tracks").upsert({ user_id: uid, track_id: track.id, track }));
   else ok(await db().from("liked_tracks").delete().eq("user_id", uid).eq("track_id", track.id));
@@ -43,6 +48,7 @@ export async function savePlaylist(uid: string, p: Playlist) {
     ok(await db().from("playlist_tracks").insert(p.tracks.map((t, i) => ({ playlist_id: p.id, track_id: t.id, track: t, position: i }))));
 }
 
+/** Deletes a playlist (its tracks are removed by the database cascade). */
 export async function removePlaylist(id: string) {
   ok(await db().from("playlists").delete().eq("id", id));
 }

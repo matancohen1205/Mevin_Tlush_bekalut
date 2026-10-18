@@ -3,12 +3,14 @@
 const fs = require("fs");
 const RATE = 44100, SECONDS = Number(process.argv[3] || 56);
 const n = RATE * SECONDS, L = new Float32Array(n), R = new Float32Array(n);
+/** Frequency in Hz of a MIDI note. */
 const hz = (m) => 440 * 2 ** ((m - 69) / 12);
 let seed = 7; const rnd = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
 const root = 50, beat = 60 / 92, bar = beat * 4;
 const chords = [[0, 7, 12, 16], [-3, 4, 9, 12], [-5, 2, 7, 11], [-7, 0, 5, 9]];
 const PENTA = [0, 2, 4, 7, 9];
 
+/** Adds a decaying sine (or triangle) note into the stereo buffers at the given pan. */
 function tone(t0, dur, midi, amp, attack, decay, pan = 0.5, tri = false) {
   const f = hz(midi), s0 = Math.floor(t0 * RATE), s1 = Math.min(n, Math.floor((t0 + dur) * RATE));
   for (let i = s0; i < s1; i++) {
@@ -17,10 +19,12 @@ function tone(t0, dur, midi, amp, attack, decay, pan = 0.5, tri = false) {
     L[i] += v * (1 - pan); R[i] += v * pan;
   }
 }
+/** Adds a short noise burst (soft hi-hat). */
 function tick(t0, amp) { // soft hat
   const s0 = Math.floor(t0 * RATE);
   for (let i = 0; i < RATE * 0.05 && s0 + i < n; i++) { const v = (rnd() * 2 - 1) * amp * Math.exp(-i / (RATE * 0.012)); L[s0 + i] += v; R[s0 + i] += v; }
 }
+/** Adds a soft kick drum (falling-pitch sine). */
 function kick(t0, amp) {
   const s0 = Math.floor(t0 * RATE);
   for (let i = 0; i < RATE * 0.25 && s0 + i < n; i++) { const t = i / RATE, v = amp * Math.sin(2 * Math.PI * (48 + 90 * Math.exp(-t * 28)) * t) * Math.exp(-t * 9); L[s0 + i] += v; R[s0 + i] += v; }

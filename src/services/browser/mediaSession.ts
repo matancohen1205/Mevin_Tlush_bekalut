@@ -9,6 +9,7 @@ export interface MediaActions {
   seekTo: (seconds: number) => void;
 }
 
+/** True when the browser supports the Media Session API. */
 const supported = (): boolean => typeof navigator !== "undefined" && "mediaSession" in navigator;
 
 /** Publishes the current track's title, artist and artwork to the OS. */

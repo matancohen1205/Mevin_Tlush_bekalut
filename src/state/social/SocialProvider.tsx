@@ -10,6 +10,7 @@ import { freshSocial, loadSocial, saveSocial } from "./socialStorage";
 import { useTimers } from "./useTimers";
 
 const FOLLOW_ACCEPT_DELAY_MS = 3000;
+/** Short random id for posts, comments and notifications. */
 const newId = (): string => Math.random().toString(36).slice(2, 9);
 
 /** Provides the community to the tree. */

@@ -1,3 +1,4 @@
+/** Placeholder carousel cards shown while tracks load. */
 export function CardSkeletons({ n = 5 }: { n?: number }) {
   return (
     <div className="hscroll" aria-busy="true">
@@ -12,6 +13,7 @@ export function CardSkeletons({ n = 5 }: { n?: number }) {
   );
 }
 
+/** Placeholder list rows shown while tracks load. */
 export function RowSkeletons({ n = 6 }: { n?: number }) {
   return (
     <div className="rows" aria-busy="true">

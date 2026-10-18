@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useDialog } from "../../hooks/useDialog";
 import { genresLeft, toggleGenre } from "../../domain/onboarding";
 import { tr, useLang } from "../../i18n";
-import { COUNTRIES } from "../../services/music";
+import { COUNTRIES } from "../../state/catalog";
 import { usePrefs } from "../../state/prefs";
 import { LangSwitch } from "../common/LangSwitch";
 import { Logo } from "../common/Logo";

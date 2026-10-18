@@ -1,6 +1,6 @@
 /** Multi-select grid of genre tiles. */
 import type { CSSProperties } from "react";
-import { GENRES } from "../../services/music";
+import { GENRES } from "../../state/catalog";
 import { tr, useLang } from "../../i18n";
 
 /** `selected` holds genre ids; `onToggle` flips one. */

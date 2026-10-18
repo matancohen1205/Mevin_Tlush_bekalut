@@ -14,8 +14,10 @@ interface ItunesResult {
   trackViewUrl?: string;
 }
 
+/** Swaps the 100px artwork URL for the 400px one. */
 const hiRes = (url = "") => url.replace("100x100", "400x400");
 
+/** Maps an iTunes result to the app's Track (30-second preview, larger artwork, store link). */
 function toTrack(r: ItunesResult, country?: string): Track {
   return {
     id: `itunes-${r.trackId}`,
@@ -34,6 +36,7 @@ function toTrack(r: ItunesResult, country?: string): Track {
   };
 }
 
+/** GET + JSON with an HTTP status check. */
 async function getJson<T>(url: string): Promise<T> {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
