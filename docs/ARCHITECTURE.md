@@ -9,15 +9,46 @@
   - ניתן להוסיף `jamendo` (שירים מלאים ברישיון CC) / `deezer` / `spotify` באותו ממשק.
 - **Backend (שלב הבא):** Supabase (Postgres + Auth + Storage + Realtime). כרגע המצב נשמר ב-`localStorage` מאחורי ממשק `Store`.
 
-## מבנה תיקיות
+## מבנה תיקיות (שכבות)
 ```
 src/
-  styles/      tokens.css (Design System), global.css
-  i18n/        he/en מחרוזות, כיוון RTL/LTR
-  services/music/  provider.ts, itunes.ts, demo.ts
-  state/       player.tsx (נגן+תור), library.tsx (לייקים/פלייליסטים)
-  components/  Icon, BottomNav, MiniPlayer, FullPlayer, TrackRow, TrackCard, Skeleton, Waveform
-  pages/       Home, Search, Library, Community, Profile
+├─ main.tsx                  # נקודת כניסה: mount + service worker
+├─ app/                      # הרכבה בלבד: App, AppProviders, AuthGate, Shell, PageRouter
+├─ pages/                    # מסכים דקים; מרכיבים רכיבים ומשתמשים ב-hooks של state
+├─ components/               # UI תצוגתי, לפי תחום:
+│  ├─ common/  layout/  player/  tracks/  home/  search/
+│  ├─ playlists/  social/  profile/  settings/  onboarding/
+├─ state/                    # חיבור React: Providers + hooks בלבד
+│  ├─ player/  library/  social/  auth/  prefs/  ui/  theme/  catalog/
+├─ hooks/                    # hooks כלליים (useDialog, useInstall)
+├─ domain/                   # לוגיקה עסקית טהורה, ללא React/DOM/רשת (נבדקת ביחידות)
+│  ├─ queue  playlists  social  socialState  posts  profile  onboarding  smartPlaylist  time
+├─ services/                 # גבולות I/O: רשת, אחסון, API של הדפדפן
+│  ├─ music/ (itunes, audius, demo, synth/…)  cloud/ (supabase, auth, library)
+│  ├─ storage/localStore.ts   browser/ (audioElement, mediaSession, serviceWorker)
+├─ data/seed/                # קהילה פיקטיבית לדמו
+├─ i18n/                     # translate.ts, I18nProvider, en/<תחום>.ts
+├─ styles/                   # tokens.css + קובץ לכל תחום, מיובאים ב-index.css
+└─ types/                    # טיפוסים משותפים
+scripts/dev/check-architecture.cjs   # אוכף את הכללים
+scripts/promo/                       # יצירת סרטון התדמית (lib/ + tour/)
+```
+
+### כללי תלות (נאכפים אוטומטית)
+תלויות מצביעות רק "מטה": `app → pages → components → state → (services | domain) → types`.
+
+| שכבה | מותר לה לייבא |
+|---|---|
+| `domain` | `types` בלבד (אין React, אין רשת) |
+| `services` | `types`, `domain` |
+| `state` | `domain`, `services`, `data`, `i18n`, `hooks`, `types` |
+| `components` | `state`, `hooks`, `domain`, `i18n`, `types` (לא `services` ישירות) |
+| `pages` | `components`, `state`, `hooks`, `domain`, `i18n`, `types` |
+
+עוד כללים: קובץ עד 150 שורות; הערה מעל כל פונקציה ברמה העליונה; גישה ל-`localStorage`, `fetch` ו-Supabase רק בתוך `services/`.
+
+```bash
+npm run check        # typecheck + בדיקות יחידה + בדיקת ארכיטקטורה
 ```
 
 ## סכמת מסד נתונים (Supabase / Postgres)

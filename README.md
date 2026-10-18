@@ -28,16 +28,18 @@ npm run build      # type check + production build
 No keys are required. Without Supabase variables the app runs fully local (data in `localStorage`).
 
 ## Architecture
-React + TypeScript + Vite, plain CSS with design tokens (`src/styles/tokens.css`).
+React + TypeScript + Vite, plain CSS with design tokens. Strictly layered and modular: pure business rules (`domain/`), I/O boundaries (`services/`), React state wiring (`state/`), presentational `components/` and thin `pages/`. Files stay under 150 lines, every function is documented, and `npm run check` enforces layer boundaries, file size, comments and I/O confinement, alongside type checking and unit tests.
 
 ```
 src/
-  services/music/   MusicProvider implementations (itunes, audius, demo + generated audio)
-  state/            player (single <audio>), library, social, auth, prefs
-  i18n/             Hebrew is the source text; en.ts maps it to English
-  components/ pages/
-supabase/schema.sql Postgres schema + row level security for the cloud version
-docs/ARCHITECTURE.md  details and roadmap
+  app/        composition only (providers, auth gate, shell, router)
+  pages/      thin screens
+  components/ UI by feature (player, tracks, playlists, social, profile, settings…)
+  state/      React providers and hooks (player, library, social, auth, prefs, ui, theme, catalog)
+  domain/     pure business rules, unit-tested (queue, playlists, social, smart playlist…)
+  services/   network, storage and browser APIs (music providers, Supabase, Media Session)
+  data/ i18n/ styles/ types/ hooks/
+scripts/dev/check-architecture.cjs   enforces the rules above
 ```
 
 ### Status of the cloud backend
