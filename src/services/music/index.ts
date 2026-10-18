@@ -4,7 +4,7 @@ import { demoProvider } from "./demo";
 import { itunesProvider } from "./itunes";
 import type { MusicProvider } from "./provider";
 
-export { COUNTRIES, GENRES, MOODS } from "./provider";
+export { COUNTRIES, GENRES, MOODS } from "./catalog";
 
 /** Live sources the user can choose between. */
 export type Source = "itunes" | "audius";

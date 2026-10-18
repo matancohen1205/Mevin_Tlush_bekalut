@@ -1,0 +1,20 @@
+/** English translations: Seeded demo community content (people, posts, comments). Key = the Hebrew source text. */
+export const seed: Record<string, string> = {
+  "נועה ים": "Noa Yam",
+  "מוזיקה לים ולנסיעות ארוכות 🌊": "Music for the sea and long drives 🌊",
+  "ים תיכון בערב": "Mediterranean Evening",
+  "לשקיעות ולבירה קרה": "For sunsets and a cold beer",
+  "נסיעה דרומה": "Drive South",
+  "עומר כהן": "Omer Cohen",
+  "רוק, אינדי וקצת ג׳אז. אוסף תקליטים.": "Rock, indie and a bit of jazz. Vinyl collector.",
+  "ריכוז לעבודה": "Focus for Work",
+  "בלי מילים": "No lyrics",
+  "תמר לוי": "Tamar Levi",
+  "פרופיל פרטי.": "Private profile.",
+  "השיר הזה לא יוצא לי מהראש מאז הבוקר 🎧": "This song has been stuck in my head since morning 🎧",
+  "וואו, תודה על ההמלצה!": "Wow, thanks for the recommendation!",
+  "הפלייליסט החדש שלי לגשם בטוקיו": "My new playlist for rain in Tokyo",
+  "מי עוד עובד עם מוזיקה ברקע?": "Who else works with music in the background?",
+  "שמרתי! 🙌": "Saved! 🙌",
+  "רק לעוקבים שלי 🤫": "Just for my followers 🤫",
+};

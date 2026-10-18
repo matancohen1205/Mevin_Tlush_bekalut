@@ -1,117 +1,40 @@
-import { useEffect, useState } from "react";
-import { COUNTRIES, GENRES, MOODS, music, type Result } from "../services/music";
-import { usePlayer } from "../state/player/PlayerProvider";
-import { CardSkeletons, RowSkeletons } from "../components/common/Skeleton";
-import { TrackCard, TrackRow } from "../components/tracks/Track";
-import { Icon } from "../components/common/Icon";
+/** Home screen: banner, source switch, country chips, recommendations, moods and charts. */
+import { useState } from "react";
+import { ChartsSection } from "../components/home/ChartsSection";
+import { CountryChips } from "../components/home/CountryChips";
+import { ForYouSection } from "../components/home/ForYouSection";
+import { HeroBanner } from "../components/home/HeroBanner";
+import { MoodSection } from "../components/home/MoodSection";
+import { SourceSwitch } from "../components/home/SourceSwitch";
 import { Logo } from "../components/common/Logo";
-import { usePrefs } from "../state/prefs/PrefsProvider";
+import { ThemeToggle } from "../components/common/ThemeToggle";
+import { COUNTRIES } from "../services/music";
+import { useCharts } from "../state/catalog";
+import { usePrefs } from "../state/prefs";
 import { tr, useLang } from "../i18n";
 
-export function Home({ themeBtn }: { themeBtn: React.ReactNode }) {
+/** Page composition only; data comes from catalog hooks. */
+export function Home() {
   useLang();
   const prefs = usePrefs();
   const [country, setCountry] = useState(prefs.country);
-  const [forYou, setForYou] = useState<Result | null>(null);
-  const [mood, setMood] = useState<string | null>(null);
-  const [charts, setCharts] = useState<Result | null>(null);
-  const [moodTracks, setMoodTracks] = useState<Result | null>(null);
-  const { play } = usePlayer();
-
-  useEffect(() => {
-    let live = true;
-    setCharts(null);
-    music.charts(country, 12, prefs.source).then((r) => live && setCharts(r));
-    return () => { live = false; };
-  }, [country, prefs.source]);
-
-  useEffect(() => {
-    if (!mood) return setMoodTracks(null);
-    let live = true;
-    setMoodTracks(null);
-    const term = MOODS.find((m) => m.id === mood)!.term;
-    music.search(term, country, 12, prefs.source).then((r) => live && setMoodTracks(r));
-    return () => { live = false; };
-  }, [mood, country, prefs.source]);
-
-  useEffect(() => {
-    if (!prefs.genres.length) return;
-    let live = true;
-    const term = prefs.genres.map((g) => GENRES.find((x) => x.id === g)?.term).filter(Boolean).slice(0, 2).join(" ");
-    music.search(term, country, 12, prefs.source).then((r) => live && setForYou(r));
-    return () => { live = false; };
-  }, [prefs.genres, country, prefs.source]);
-
-  const name = COUNTRIES.find((c) => c.code === country)!.name;
-  const tracks = charts?.tracks ?? [];
+  const charts = useCharts(country, prefs.source);
+  const countryName = COUNTRIES.find((c) => c.code === country)?.name ?? "";
+  const heading = prefs.source === "audius" ? tr("פופולרי עכשיו ב-Audius") : tr("הכי מושמעים · {country}", { country: tr(countryName) });
 
   return (
     <main id="main" tabIndex={-1} className="page">
       <header className="topbar">
-        <div className="logo" lang="en">
-          <Logo /> Wavely
-        </div>
-        {themeBtn}
+        <div className="logo" lang="en"><Logo /> Wavely</div>
+        <ThemeToggle />
       </header>
-
-      <section className="hero section" aria-labelledby="hero-t">
-        <h1 id="hero-t">{tr("המוזיקה של העולם, במקום אחד")}</h1>
-        <p>{tr("גלו להיטים מכל מדינה, שמרו אהובים ובנו פלייליסטים.")}</p>
-        <button className="btn" disabled={!tracks.length} onClick={() => play(tracks[0], tracks)}>
-          <Icon name="play" size={18} /> {tr("נגן להיטים")}
-        </button>
-      </section>
-
-      <div className="seg source-seg" role="radiogroup" aria-label={tr("מקור מוזיקה")}>
-        <button role="radio" aria-checked={prefs.source === "itunes"} aria-selected={prefs.source === "itunes"} onClick={() => prefs.save({ source: "itunes" })}>{tr("להיטים · 30 שניות")}</button>
-        <button role="radio" aria-checked={prefs.source === "audius"} aria-selected={prefs.source === "audius"} onClick={() => prefs.save({ source: "audius" })}>{tr("שירים מלאים · Audius")}</button>
-      </div>
-      <p className="source-note">{prefs.source === "audius" ? tr("שירים מלאים של אמנים עצמאיים, בלי הגבלת זמן. אין מצעד לפי מדינה.") : tr("תצוגה מקדימה של 30 שניות ממצעדי כל מדינה.")}</p>
-
+      <HeroBanner tracks={charts?.tracks ?? []} />
+      <SourceSwitch />
       {charts?.offline && <div className="banner" role="status">{tr("אין חיבור למקור המוזיקה – מוצגים שירי דמה שנוצרו במחשב.")}</div>}
-
-      {prefs.source === "itunes" && <section className="section" aria-label={tr("מדינות")}>
-        <div className="chip-row" role="group" aria-label={tr("בחירת מדינה")}>
-          {COUNTRIES.map((c) => (
-            <button key={c.code} className="chip" aria-pressed={c.code === country} onClick={() => setCountry(c.code)}>
-              {c.flag} {tr(c.name)}
-            </button>
-          ))}
-        </div>
-      </section>}
-
-      {prefs.genres.length > 0 && (
-        <section className="section">
-          <div className="section-head"><h2>{tr("בשבילך")}</h2></div>
-          {forYou ? <div className="hscroll">{forYou.tracks.map((t) => <TrackCard key={t.id} track={t} queue={forYou.tracks} />)}</div> : <CardSkeletons />}
-        </section>
-      )}
-
-      <section className="section">
-        <div className="section-head"><h2>{tr("מצב רוח")}</h2></div>
-        <div className="chip-row" role="group" aria-label={tr("מצב רוח")}>
-          {MOODS.map((m) => (
-            <button key={m.id} className="chip" aria-pressed={mood === m.id} onClick={() => setMood(mood === m.id ? null : m.id)}>
-              {tr(m.label)}
-            </button>
-          ))}
-        </div>
-        {mood && (moodTracks ? (
-          <div className="hscroll">{moodTracks.tracks.map((t) => <TrackCard key={t.id} track={t} queue={moodTracks.tracks} />)}</div>
-        ) : <CardSkeletons />)}
-      </section>
-
-      <section className="section">
-        <div className="section-head"><h2>{prefs.source === "audius" ? tr("פופולרי עכשיו ב-Audius") : tr("הכי מושמעים · {country}", { country: tr(name) })}</h2></div>
-        {charts ? (
-          <>
-            <div className="hscroll">{tracks.slice(0, 6).map((t) => <TrackCard key={t.id} track={t} queue={tracks} />)}</div>
-            <div className="rows" style={{ marginTop: 8 }}>{tracks.map((t, i) => <TrackRow key={t.id} track={t} queue={tracks} rank={i + 1} />)}</div>
-          </>
-        ) : (
-          <><CardSkeletons /><RowSkeletons /></>
-        )}
-      </section>
+      {prefs.source === "itunes" && <section className="section" aria-label={tr("מדינות")}><CountryChips value={country} onChange={setCountry} /></section>}
+      <ForYouSection country={country} />
+      <MoodSection country={country} />
+      <ChartsSection tracks={charts?.tracks ?? null} heading={heading} />
     </main>
   );
 }

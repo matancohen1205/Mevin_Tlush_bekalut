@@ -1,0 +1,6 @@
+/* Skip link and focus helpers. */
+.skip-link { position: absolute; inset-inline-start: 8px; top: -60px; z-index: 100; padding: 10px 16px; border-radius: 999px; background: var(--ink-900); color: #fff; font-weight: 700; }
+.skip-link:focus { top: 8px; }
+:root[data-theme="dark"] .skip-link { background: var(--sky-200); color: var(--ink-900); }
+main:focus { outline: none; }
+.onboard:focus, .sheet:focus, .full:focus { outline: none; }

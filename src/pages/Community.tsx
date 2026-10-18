@@ -1,60 +1,36 @@
+/** Community screen: feed tabs, follow suggestions and posts. */
 import { useState } from "react";
 import { Icon } from "../components/common/Icon";
-import { PostCard } from "../components/social/PostCard";
-import { Avatar } from "../components/common/Avatar";
-import { useSocial } from "../state/social/SocialProvider";
-import { useUi } from "../state/ui/UiProvider";
-import { SEED_USERS } from "../data/seed";
+import { FeedList } from "../components/social/FeedList";
+import { NotificationBell } from "../components/social/NotificationBell";
+import { PeopleSuggestions } from "../components/social/PeopleSuggestions";
+import type { FeedTab } from "../domain/social";
+import { useFeed } from "../state/social";
+import { useUi } from "../state/ui";
 import { tr, useLang } from "../i18n";
 
+/** Page composition only; feed selection comes from useFeed. */
 export function Community() {
   useLang();
-  const soc = useSocial();
-  const { setSheet, setRoute } = useUi();
-  const [tab, setTab] = useState<"following" | "discover">("following");
-
-  const visible = soc.posts.filter((p) => !soc.blocked.includes(p.authorId));
-  const feed = tab === "following"
-    ? visible.filter((p) => p.authorId === "me" || soc.following[p.authorId] === "accepted")
-    : visible.filter((p) => p.authorId === "me" || !soc.profileOf(p.authorId)?.isPrivate || soc.following[p.authorId] === "accepted");
-  const suggestions = SEED_USERS.filter((u) => !soc.following[u.id] && !soc.blocked.includes(u.id));
+  const { setSheet } = useUi();
+  const [tab, setTab] = useState<FeedTab>("following");
+  const { posts, suggestions } = useFeed(tab);
 
   return (
     <main id="main" tabIndex={-1} className="page">
       <div className="topbar">
         <h1 className="page-title">{tr("קהילה")}</h1>
         <div className="topbar-actions">
-          <button className="icon-btn bell" onClick={() => setRoute({ kind: "notifs" })} aria-label={soc.unread ? tr("התראות, {n} חדשות", { n: soc.unread }) : tr("התראות")}>
-            <Icon name="bell" />{soc.unread > 0 && <span className="badge">{soc.unread}</span>}
-          </button>
+          <NotificationBell />
           <button className="btn primary" onClick={() => setSheet({ kind: "compose" })}><Icon name="plus" size={18} /> {tr("שתף")}</button>
         </div>
       </div>
-
       <div className="seg" role="tablist" style={{ marginTop: 16 }}>
         <button role="tab" aria-selected={tab === "following"} onClick={() => setTab("following")}>{tr("עוקבים")}</button>
         <button role="tab" aria-selected={tab === "discover"} onClick={() => setTab("discover")}>{tr("גלו")}</button>
       </div>
-
-      {tab === "following" && suggestions.length > 0 && (
-        <section className="section">
-          <div className="section-head"><h2>{tr("אנשים שאולי תאהבו")}</h2></div>
-          <div className="hscroll">
-            {suggestions.map((u) => (
-              <div key={u.id} className="person">
-                <button onClick={() => setRoute({ kind: "user", id: u.id })} className="person-link"><Avatar user={u} size={56} /><strong>{tr(u.name)}</strong><span className="muted">@{u.handle}</span></button>
-                <button className="chip" onClick={() => soc.toggleFollow(u.id)}>{soc.following[u.id] ? tr("בקשה נשלחה") : tr("עקוב")}</button>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      <section className="section feed">
-        {feed.length ? feed.map((p) => <PostCard key={p.id} post={p} />) : (
-          <div className="empty"><div className="big">🌊</div><p>{tr("עוד אין מה להציג. עקבו אחרי אנשים או שתפו שיר ראשון.")}</p></div>
-        )}
-      </section>
+      {tab === "following" && <PeopleSuggestions people={suggestions} />}
+      <section className="section"><FeedList posts={posts} /></section>
     </main>
   );
 }

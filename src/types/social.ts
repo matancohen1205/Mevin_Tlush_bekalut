@@ -44,3 +44,15 @@ export interface Notif {
   createdAt: number;
   read: boolean;
 }
+
+export type FollowStatus = "accepted" | "pending";
+
+/** Everything the community feature persists for the current user. */
+export interface SocialSnapshot {
+  me: Profile;
+  following: Record<string, FollowStatus>;
+  followersOfMe: string[];
+  blocked: string[];
+  posts: Post[];
+  notifs: Notif[];
+}

@@ -1,23 +1,22 @@
-import { Avatar } from "../components/common/Avatar";
+/** Another member's profile: follow button, playlists and posts (or a lock for private profiles). */
 import { Icon } from "../components/common/Icon";
-import { PostCard } from "../components/social/PostCard";
-import { usePlayer } from "../state/player/PlayerProvider";
-import { useSocial } from "../state/social/SocialProvider";
-import { useUi } from "../state/ui/UiProvider";
+import { FollowButton } from "../components/profile/FollowButton";
+import { PlaylistShelf } from "../components/profile/PlaylistShelf";
+import { ProfileHeader } from "../components/profile/ProfileHeader";
+import { FeedList } from "../components/social/FeedList";
+import { useSocial } from "../state/social";
+import { useUi } from "../state/ui";
 import { tr, useLang } from "../i18n";
 
+/** Page composition only; visibility rules come from the social state. */
 export function UserProfile({ id }: { id: string }) {
   useLang();
-  const soc = useSocial();
-  const { play } = usePlayer();
+  const social = useSocial();
   const { setRoute, setSheet } = useUi();
-  const u = soc.profileOf(id);
-  if (!u) return null;
-  const status = soc.following[id];
-  const visible = soc.canSee(id);
-  const posts = soc.posts.filter((p) => p.authorId === id);
-  const playlists = soc.playlistsOf(id);
-  const blocked = soc.blocked.includes(id);
+  const user = social.profileOf(id);
+  if (!user) return null;
+  const playlists = social.playlistsOf(id);
+  const blocked = social.blocked.includes(id);
 
   return (
     <main id="main" tabIndex={-1} className="page">
@@ -25,39 +24,20 @@ export function UserProfile({ id }: { id: string }) {
         <button className="icon-btn" onClick={() => setRoute(null)} aria-label={tr("חזור")}><Icon name="back" /></button>
         <button className="icon-btn" onClick={() => setSheet({ kind: "more", userId: id })} aria-label={tr("עוד פעולות")}><Icon name="more" /></button>
       </div>
+      <ProfileHeader translateText profile={user} stats={{ followers: social.followersCount(id), following: social.followingCount(id), playlists: playlists.length }}>
+        {blocked
+          ? <button className="btn primary" onClick={() => social.unblock(id)}>{tr("בטל חסימה")}</button>
+          : <FollowButton status={social.following[id]} onToggle={() => social.toggleFollow(id)} />}
+      </ProfileHeader>
 
-      <section className="profile-head">
-        <Avatar user={u} size={84} />
-        <h2>{tr(u.name)}</h2>
-        <span className="muted" dir="ltr">@{u.handle}{u.isPrivate && " · 🔒"}</span>
-        {u.bio && <p>{tr(u.bio)}</p>}
-        <div className="stats">
-          <div className="stat"><strong>{soc.followersCount(id).toLocaleString("he-IL")}</strong><span className="muted">{tr("עוקבים")}</span></div>
-          <div className="stat"><strong>{soc.followingCount(id)}</strong><span className="muted">{tr("עוקב")}</span></div>
-          <div className="stat"><strong>{playlists.length}</strong><span className="muted">{tr("פלייליסטים")}</span></div>
-        </div>
-        {blocked ? <button className="btn primary" onClick={() => soc.unblock(id)}>{tr("בטל חסימה")}</button> : (
-          <button className={status ? "chip" : "btn primary"} onClick={() => soc.toggleFollow(id)} aria-pressed={!!status}>
-            {status === "accepted" ? tr("עוקב ✓") : status === "pending" ? tr("בקשה נשלחה") : <><Icon name="userplus" size={18} /> {tr("עקוב")}</>}
-          </button>
-        )}
-      </section>
-
-      {blocked ? null : !visible ? (
+      {blocked ? null : !social.canSee(id) ? (
         <div className="empty"><div className="big">🔒</div><p>{tr("הפרופיל פרטי. עקבו כדי לראות את השיתופים והפלייליסטים.")}</p></div>
       ) : (
         <>
-          {playlists.length > 0 && (
-            <section className="section"><div className="section-head"><h2>{tr("פלייליסטים")}</h2></div>
-              <div className="hscroll">{playlists.map((p) => (
-                <button key={p.title} className="card" onClick={() => play(p.tracks[0], p.tracks)}>
-                  <div className="mosaic art" style={{ width: 148, height: 148, borderRadius: 16 }}>{p.tracks.slice(0, 4).map((t, i) => <img key={i} src={t.artwork} alt="" />)}</div>
-                  <div className="t">{tr(p.title)}</div><div className="a">{tr("{n} שירים", { n: p.tracks.length })}</div>
-                </button>))}
-              </div></section>
-          )}
-          <section className="section"><div className="section-head"><h2>{tr("שיתופים")}</h2></div>
-            {posts.length ? <div className="feed">{posts.map((p) => <PostCard key={p.id} post={p} />)}</div> : <p className="muted">{tr("עוד אין שיתופים.")}</p>}
+          {playlists.length > 0 && <section className="section"><div className="section-head"><h2>{tr("פלייליסטים")}</h2></div><PlaylistShelf translateTitles playlists={playlists} /></section>}
+          <section className="section">
+            <div className="section-head"><h2>{tr("שיתופים")}</h2></div>
+            <FeedList posts={social.posts.filter((p) => p.authorId === id)} emptyText={tr("עוד אין שיתופים.")} />
           </section>
         </>
       )}

@@ -1,69 +1,27 @@
-import type { Post } from "../../types";
-import { useLibrary } from "../../state/library/LibraryProvider";
-import { usePlayer } from "../../state/player/PlayerProvider";
-import { useSocial } from "../../state/social/SocialProvider";
-import { useUi } from "../../state/ui/UiProvider";
-import { Avatar, timeAgo } from "../common/Avatar";
-import { Icon } from "../common/Icon";
-import { Waveform } from "../common/Waveform";
+/** A feed post: header, caption, attached song/playlist and actions. */
 import { tr, useLang } from "../../i18n";
+import { useSocial } from "../../state/social";
+import type { Post } from "../../types";
+import { Waveform } from "../common/Waveform";
+import { PlaylistAttachment } from "./PlaylistAttachment";
+import { PostActions } from "./PostActions";
+import { PostHeader } from "./PostHeader";
+import { TrackAttachment } from "./TrackAttachment";
 
+/** Composition of the post parts. */
 export function PostCard({ post }: { post: Post }) {
   useLang();
-  const soc = useSocial();
-  const { play, current, playing } = usePlayer();
-  const lib = useLibrary();
-  const { setRoute, setSheet, showToast } = useUi();
-  const author = soc.profileOf(post.authorId)!;
-  const liked = post.likes.includes("me");
-  const t = post.track;
-  const active = !!t && current?.id === t.id;
-
-  const copy = async () => {
-    const text = `${post.playlist?.title ?? `${t?.title} – ${t?.artist}`} · Wavely`;
-    try { await navigator.clipboard.writeText(text); showToast("הקישור הועתק"); } catch { showToast(text); }
-  };
-  const save = () => {
-    const pl = post.playlist!;
-    lib.createPlaylist(tr(pl.title), { description: tr("מאת {name}", { name: tr(author.name) }), tracks: pl.tracks });
-    showToast("הפלייליסט נשמר בספרייה");
-  };
-
+  const author = useSocial().profileOf(post.authorId);
+  if (!author) return null;
+  const nowPlaying = post.kind === "now_playing";
   return (
     <article className="post">
-      <header className="post-head">
-        <button className="who" onClick={() => post.authorId !== "me" && setRoute({ kind: "user", id: post.authorId })}>
-          <Avatar user={author} />
-          <span><strong>{tr(author.name)}</strong><span className="muted"> @{author.handle} · {timeAgo(post.createdAt)}</span></span>
-        </button>
-        <button className="icon-btn" onClick={() => setSheet({ kind: "more", postId: post.id, userId: post.authorId })} aria-label={tr("עוד פעולות")}><Icon name="more" /></button>
-      </header>
-
-      {post.kind === "now_playing" && <div className="np"><Waveform playing /> {tr("מתנגן עכשיו אצל {name}", { name: tr(author.name) })}</div>}
-      {post.caption && post.kind !== "now_playing" && <p className="caption">{tr(post.caption)}</p>}
-
-      {t && (
-        <button className="attach" onClick={() => play(t, [t])} aria-label={tr("נגן {title}", { title: t.title })}>
-          <img src={t.artwork} alt="" loading="lazy" />
-          <span className="meta"><span className="t">{t.title}</span><span className="a">{t.artist}</span></span>
-          <span className="play-fab sm">{active && playing ? <Waveform playing /> : <Icon name="play" size={18} />}</span>
-        </button>
-      )}
-
-      {post.playlist && (
-        <div className="attach pl">
-          <div className="mosaic" style={{ width: 64, height: 64 }}>{post.playlist.tracks.slice(0, 4).map((x, i) => <img key={i} src={x.artwork} alt="" />)}</div>
-          <span className="meta"><span className="t">{tr(post.playlist.title)}</span><span className="a">{tr("{n} שירים", { n: post.playlist.tracks.length })}</span></span>
-          <button className="play-fab sm" onClick={() => play(post.playlist!.tracks[0], post.playlist!.tracks)} aria-label={tr("נגן את הפלייליסט")}><Icon name="play" size={18} /></button>
-        </div>
-      )}
-
-      <footer className="post-actions">
-        <button className={`act ${liked ? "on" : ""}`} onClick={() => soc.toggleLike(post.id)} aria-pressed={liked} aria-label={tr("לייק")}><Icon name="heart" size={20} fill={liked} /> {post.likes.length || ""}</button>
-        <button className="act" onClick={() => setSheet({ kind: "comments", postId: post.id })} aria-label={tr("תגובות")}><Icon name="comment" size={20} /> {post.comments.length || ""}</button>
-        {post.playlist && <button className="act" onClick={save}><Icon name="plus" size={20} /> {tr("שמור")}</button>}
-        <button className="act" onClick={copy} aria-label={tr("שתף קישור")}><Icon name="share" size={20} /></button>
-      </footer>
+      <PostHeader post={post} author={author} />
+      {nowPlaying && <div className="np"><Waveform playing /> {tr("מתנגן עכשיו אצל {name}", { name: tr(author.name) })}</div>}
+      {post.caption && !nowPlaying && <p className="caption">{tr(post.caption)}</p>}
+      {post.track && <TrackAttachment track={post.track} />}
+      {post.playlist && <PlaylistAttachment playlist={post.playlist} />}
+      <PostActions post={post} author={author} />
     </article>
   );
 }

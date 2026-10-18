@@ -5,6 +5,7 @@ export type Tab = "home" | "search" | "library" | "community" | "profile";
 const TABS: Tab[] = ["home", "search", "library", "community", "profile"];
 const LABEL: Record<Tab, string> = { home: "בית", search: "חיפוש", library: "ספרייה", community: "קהילה", profile: "פרופיל" };
 
+/** Main navigation (bottom bar on phones, sidebar on desktop); `badge` shows a count on a tab. */
 export function BottomNav({ tab, onChange, badge = {} }: { tab: Tab; onChange: (t: Tab) => void; badge?: Partial<Record<Tab, number>> }) {
   useLang();
   return (

@@ -1,0 +1,13 @@
+/* Bottom sheets, toast and the onboarding/auth screens. */
+.overlay { position: fixed; inset: 0; z-index: 40; background: rgba(11, 30, 51, 0.45); backdrop-filter: blur(3px); display: flex; align-items: flex-end; justify-content: center; animation: fadein 0.2s; }
+.sheet { width: 100%; max-width: 520px; max-height: 88vh; overflow-y: auto; background: var(--bg); border-radius: var(--r-lg) var(--r-lg) 0 0; padding: var(--s4) var(--s5) calc(var(--s5) + env(safe-area-inset-bottom)); box-shadow: var(--shadow-lg); animation: rise 0.35s var(--ease); }
+.sheet-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--s3); }
+.sheet-head h2 { font-size: 19px; }
+.inline-form { display: flex; gap: 8px; margin-top: var(--s4); }
+.toast { position: fixed; z-index: 60; inset-inline: 0; margin: 0 auto; width: max-content; max-width: 90vw; bottom: calc(var(--nav-h) + var(--mini-h) + 24px); padding: 10px 18px; border-radius: 999px; background: var(--ink-900); color: #fff; box-shadow: var(--shadow-md); animation: fade 0.3s var(--ease); }
+:root[data-theme="dark"] .toast { background: var(--sky-200); color: var(--ink-900); }
+.onboard { position: fixed; inset: 0; z-index: 50; overflow-y: auto; background: var(--bg-grad), var(--bg); display: flex; justify-content: center; }
+.onboard-in { width: 100%; max-width: 520px; padding: var(--s5) var(--s5) var(--s6); }
+.onboard h1 { font-size: 28px; font-weight: 800; margin-top: var(--s5); }
+.skip { display: block; margin: 12px auto 0; color: var(--text-dim); font-size: 14px; text-decoration: underline; }
+@keyframes fadein { from { opacity: 0; } to { opacity: 1; } }

@@ -1,0 +1,25 @@
+/* Track cards, rows and loading skeletons. */
+.card { width: 148px; flex: none; scroll-snap-align: start; text-align: start; }
+.card .art { width: 148px; height: 148px; border-radius: var(--r-md); object-fit: cover; box-shadow: var(--shadow-sm); background: var(--surface-2); transition: transform 0.3s var(--ease), box-shadow 0.3s; }
+.card:hover .art { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.card .t { margin-top: 8px; font-weight: 600; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.card .a { font-size: 13px; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.rows { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s1); }
+.row { display: flex; align-items: center; gap: var(--s3); padding: 8px; border-radius: var(--r-md); transition: background 0.2s; width: 100%; text-align: start; }
+.row:hover { background: var(--surface-2); }
+.row[data-active="true"] { background: var(--surface); box-shadow: var(--shadow-sm); }
+.row .rank { width: 22px; text-align: center; color: var(--text-dim); font-weight: 600; font-size: 14px; }
+.row .art { width: 52px; height: 52px; border-radius: var(--r-sm); object-fit: cover; background: var(--surface-2); flex: none; }
+.row .meta { flex: 1; min-width: 0; }
+.row .t { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row .a { font-size: 13px; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.icon-btn { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; transition: background 0.2s, transform 0.2s var(--ease); color: var(--text-dim); }
+.icon-btn:hover { background: var(--surface-2); }
+.icon-btn:active { transform: scale(0.9); }
+.icon-btn.on { color: var(--heart); }
+
+/* Skeleton */
+.skeleton { background: linear-gradient(90deg, var(--sky-200) 25%, var(--sky-100) 50%, var(--sky-200) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: var(--r-md); }
+:root[data-theme="dark"] .skeleton { background-image: linear-gradient(90deg, #17395c 25%, #1d4670 50%, #17395c 75%); background-size: 200% 100%; }
+@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }

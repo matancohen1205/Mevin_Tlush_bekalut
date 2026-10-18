@@ -1,7 +1,9 @@
-import { usePlayer } from "../../state/player/PlayerProvider";
+import { percentOf } from "../../domain/time";
+import { usePlayer } from "../../state/player";
 import { Icon } from "../common/Icon";
 import { tr, useLang } from "../../i18n";
 
+/** Compact player pinned above the navigation; tapping the cover opens the full player. */
 export function MiniPlayer() {
   useLang();
   const { current, playing, buffering, toggle, next, position, duration, setExpanded } = usePlayer();
@@ -21,7 +23,7 @@ export function MiniPlayer() {
       <button className="icon-btn" onClick={next} aria-label={tr("הבא")}>
         <Icon name="next" size={22} />
       </button>
-      <div className="progress"><i style={{ width: `${duration ? (position / duration) * 100 : 0}%` }} /></div>
+      <div className="progress"><i style={{ width: `${percentOf(position, duration)}%` }} /></div>
     </div>
   );
 }

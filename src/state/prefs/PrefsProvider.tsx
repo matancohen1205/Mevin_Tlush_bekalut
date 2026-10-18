@@ -1,23 +1,15 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+/** Loads preferences from storage and persists every change. */
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { readJson, writeJson } from "../../services/storage/localStore";
+import { DEFAULT_PREFS, PrefsContext, type Prefs } from "./PrefsContext";
 
-interface Prefs { onboarded: boolean; genres: string[]; country: string; source: "itunes" | "audius" }
-interface PrefsState extends Prefs { save: (p: Partial<Prefs>) => void }
+const STORAGE_KEY = "wavely.prefs.v1";
 
-const KEY = "wavely.prefs.v1";
-const DEFAULT: Prefs = { onboarded: false, genres: [], country: "il", source: "itunes" };
-const Ctx = createContext<PrefsState | null>(null);
-export const usePrefs = () => {
-  const c = useContext(Ctx);
-  if (!c) throw new Error("usePrefs outside PrefsProvider");
-  return c;
-};
-
+/** Provides preferences to the tree. */
 export function PrefsProvider({ children }: { children: ReactNode }) {
-  const [p, setP] = useState<Prefs>(() => {
-    try { return { ...DEFAULT, ...JSON.parse(localStorage.getItem(KEY) ?? "{}") }; } catch { return DEFAULT; }
-  });
-  useEffect(() => {
-    try { localStorage.setItem(KEY, JSON.stringify(p)); } catch { /* ignore */ }
-  }, [p]);
-  return <Ctx.Provider value={{ ...p, save: (x) => setP((o) => ({ ...o, ...x })) }}>{children}</Ctx.Provider>;
+  const [prefs, setPrefs] = useState<Prefs>(() => ({ ...DEFAULT_PREFS, ...readJson<Partial<Prefs>>(STORAGE_KEY, {}) }));
+  useEffect(() => writeJson(STORAGE_KEY, prefs), [prefs]);
+
+  const api = useMemo(() => ({ ...prefs, save: (patch: Partial<Prefs>) => setPrefs((old) => ({ ...old, ...patch })) }), [prefs]);
+  return <PrefsContext.Provider value={api}>{children}</PrefsContext.Provider>;
 }

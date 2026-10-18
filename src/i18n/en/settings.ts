@@ -1,0 +1,23 @@
+/** English translations: Settings screen. Key = the Hebrew source text. */
+export const settings: Record<string, string> = {
+  "התחברות": "Sign in",
+  "הגדרות ופרטיות": "Settings and privacy",
+  "פרופיל פרטי": "Private profile",
+  "רק עוקבים שאישרתם יראו את השיתופים שלכם": "Only followers you approve can see your posts",
+  "משתמשים חסומים": "Blocked users",
+  "אין משתמשים חסומים": "No blocked users",
+  "בטל חסימה": "Unblock",
+  "שפה": "Language",
+  "עברית או English": "Hebrew or English",
+  "התקנת האפליקציה": "Install the app",
+  "הוסיפו את Wavely למסך הבית": "Add Wavely to your home screen",
+  "בספארי: שיתוף ← הוספה למסך הבית": "In Safari: Share → Add to Home Screen",
+  "התקנה": "Install",
+  "חשבון": "Account",
+  "אורח – הנתונים רק במכשיר הזה": "Guest – data stays on this device",
+  "התנתקות": "Sign out",
+  "איפוס נתוני הדמו של הקהילה": "Reset community demo data",
+  "שיתופים": "Posts",
+  "נתוני הקהילה אופסו": "Community data reset",
+  "Wavely הוא פרויקט תצוגה ללא מטרות רווח ואינו קשור ל-Apple או ל-Audius. תצוגות מקדימות באדיבות Apple Music, שירים מלאים באדיבות Audius, וכל זכויות השירים שמורות ליוצריהם.": "Wavely is a non-profit showcase project and is not affiliated with Apple or Audius. Previews courtesy of Apple Music, full tracks courtesy of Audius; all rights to the songs belong to their creators.",
+};

@@ -1,42 +1,22 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+/** Holds the open dialog, the current sub-page route and the toast message. */
+import { useCallback, useMemo, useState, type ReactNode } from "react";
 import { tr } from "../../i18n";
-import type { Track } from "../../types";
+import { UiContext, type Route, type Sheet } from "./UiContext";
 
-export type Sheet =
-  | { kind: "add"; track: Track }
-  | { kind: "new" }
-  | { kind: "comments"; postId: string }
-  | { kind: "compose" }
-  | { kind: "editProfile" }
-  | { kind: "more"; postId?: string; userId: string }
-  | null;
+const TOAST_MS = 2200;
 
-/** Pages that replace the current tab content (with a back button). */
-export type Route = { kind: "user"; id: string } | { kind: "notifs" } | null;
-
-interface UiState {
-  sheet: Sheet;
-  setSheet: (s: Sheet) => void;
-  route: Route;
-  setRoute: (r: Route) => void;
-  toast: string | null;
-  showToast: (m: string) => void;
-}
-const Ctx = createContext<UiState | null>(null);
-export const useUi = () => {
-  const c = useContext(Ctx);
-  if (!c) throw new Error("useUi outside UiProvider");
-  return c;
-};
-
+/** Provides UI state to the tree. */
 export function UiProvider({ children }: { children: ReactNode }) {
   const [sheet, setSheet] = useState<Sheet>(null);
   const [route, setRoute] = useState<Route>(null);
   const [toast, setToast] = useState<string | null>(null);
-  const showToast = (m: string) => {
-    const msg = tr(m);
-    setToast(msg);
-    setTimeout(() => setToast((t) => (t === msg ? null : t)), 2200);
-  };
-  return <Ctx.Provider value={{ sheet, setSheet, route, setRoute, toast, showToast }}>{children}</Ctx.Provider>;
+
+  const showToast = useCallback((message: string) => {
+    const text = tr(message);
+    setToast(text);
+    setTimeout(() => setToast((current) => (current === text ? null : current)), TOAST_MS);
+  }, []);
+
+  const api = useMemo(() => ({ sheet, setSheet, route, setRoute, toast, showToast }), [sheet, route, toast, showToast]);
+  return <UiContext.Provider value={api}>{children}</UiContext.Provider>;
 }

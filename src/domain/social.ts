@@ -1,7 +1,7 @@
 /** Pure community rules: who can see what, follow states, feed selection, counters. */
-import type { Post, Profile, Track } from "../types";
+import type { FollowStatus, Post, Profile, Track } from "../types";
 
-export type FollowStatus = "accepted" | "pending";
+export type { FollowStatus };
 export type FollowMap = Readonly<Record<string, FollowStatus>>;
 export type FeedTab = "following" | "discover";
 
@@ -35,9 +35,6 @@ export function togglePostLike(post: Post, userId = "me"): Post {
   const liked = post.likes.includes(userId);
   return { ...post, likes: liked ? post.likes.filter((u) => u !== userId) : [...post.likes, userId] };
 }
-
-/** Number of accepted follow relationships (the "following" counter). */
-export const countAccepted = (following: FollowMap): number => Object.values(following).filter((s) => s === "accepted").length;
 
 /** The user's most-liked artists, for the profile page. */
 export function topArtists(liked: readonly Track[], limit = 6): string[] {
