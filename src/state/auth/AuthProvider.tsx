@@ -1,7 +1,7 @@
 import type { Session } from "@supabase/supabase-js";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { supabase } from "../services/supabase";
-import { tr } from "../i18n";
+import { supabase } from "../../services/cloud/supabase";
+import { tr } from "../../i18n";
 
 interface AuthState {
   /** false when no Supabase keys exist: the app is local-only and never asks for login */

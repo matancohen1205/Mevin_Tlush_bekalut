@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { COUNTRIES, GENRES } from "../services/music";
-import { usePrefs } from "../state/prefs";
-import { useDialog } from "./useDialog";
-import { LangSwitch } from "./LangSwitch";
-import { Logo } from "./Logo";
-import { tr, useLang } from "../i18n";
+import { COUNTRIES, GENRES } from "../../services/music";
+import { usePrefs } from "../../state/prefs/PrefsProvider";
+import { useDialog } from "../../hooks/useDialog";
+import { LangSwitch } from "../common/LangSwitch";
+import { Logo } from "../common/Logo";
+import { tr, useLang } from "../../i18n";
 
 export function Onboarding() {
   useLang();

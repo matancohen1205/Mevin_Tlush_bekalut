@@ -1,14 +1,14 @@
 import { useMemo } from "react";
-import { Avatar } from "../components/Avatar";
-import { Icon } from "../components/Icon";
-import { PostCard } from "../components/PostCard";
-import { useLibrary } from "../state/library";
-import { usePlayer } from "../state/player";
-import { LangSwitch } from "../components/LangSwitch";
-import { useInstall } from "../state/install";
-import { useAuth } from "../state/auth";
-import { useSocial } from "../state/social";
-import { useUi } from "../state/ui";
+import { Avatar } from "../components/common/Avatar";
+import { Icon } from "../components/common/Icon";
+import { PostCard } from "../components/social/PostCard";
+import { useLibrary } from "../state/library/LibraryProvider";
+import { usePlayer } from "../state/player/PlayerProvider";
+import { LangSwitch } from "../components/common/LangSwitch";
+import { useInstall } from "../hooks/useInstall";
+import { useAuth } from "../state/auth/AuthProvider";
+import { useSocial } from "../state/social/SocialProvider";
+import { useUi } from "../state/ui/UiProvider";
 import type { Track } from "../types";
 import { tr, useLang } from "../i18n";
 

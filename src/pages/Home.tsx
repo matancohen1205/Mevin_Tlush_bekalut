@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { COUNTRIES, GENRES, MOODS, music, type Result } from "../services/music";
-import { usePlayer } from "../state/player";
-import { CardSkeletons, RowSkeletons } from "../components/Skeleton";
-import { TrackCard, TrackRow } from "../components/Track";
-import { Icon } from "../components/Icon";
-import { Logo } from "../components/Logo";
-import { usePrefs } from "../state/prefs";
+import { usePlayer } from "../state/player/PlayerProvider";
+import { CardSkeletons, RowSkeletons } from "../components/common/Skeleton";
+import { TrackCard, TrackRow } from "../components/tracks/Track";
+import { Icon } from "../components/common/Icon";
+import { Logo } from "../components/common/Logo";
+import { usePrefs } from "../state/prefs/PrefsProvider";
 import { tr, useLang } from "../i18n";
 
 export function Home({ themeBtn }: { themeBtn: React.ReactNode }) {

@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Icon } from "../components/Icon";
-import { PostCard } from "../components/PostCard";
-import { Avatar } from "../components/Avatar";
-import { useSocial } from "../state/social";
-import { useUi } from "../state/ui";
-import { SEED_USERS } from "../services/seed";
+import { Icon } from "../components/common/Icon";
+import { PostCard } from "../components/social/PostCard";
+import { Avatar } from "../components/common/Avatar";
+import { useSocial } from "../state/social/SocialProvider";
+import { useUi } from "../state/ui/UiProvider";
+import { SEED_USERS } from "../data/seed";
 import { tr, useLang } from "../i18n";
 
 export function Community() {

@@ -1,5 +1,5 @@
-import type { Profile } from "../types";
-import { tr, useLang, locale } from "../i18n";
+import type { Profile } from "../../types";
+import { tr, useLang, locale } from "../../i18n";
 
 export function Avatar({ user, size = 44 }: { user: Pick<Profile, "name" | "hue">; size?: number }) {
   useLang();

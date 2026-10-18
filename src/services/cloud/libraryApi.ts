@@ -1,4 +1,4 @@
-import type { Playlist, Track } from "../types";
+import type { Playlist, Track } from "../../types";
 import { supabase } from "./supabase";
 
 export interface CloudLibrary { liked: Track[]; playlists: Playlist[] }

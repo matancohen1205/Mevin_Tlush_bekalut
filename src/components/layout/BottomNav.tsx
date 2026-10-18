@@ -1,5 +1,5 @@
-import { Icon } from "./Icon";
-import { tr, useLang } from "../i18n";
+import { Icon } from "../common/Icon";
+import { tr, useLang } from "../../i18n";
 
 export type Tab = "home" | "search" | "library" | "community" | "profile";
 const TABS: Tab[] = ["home", "search", "library", "community", "profile"];

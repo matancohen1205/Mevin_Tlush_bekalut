@@ -1,8 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { fetchLibrary, removePlaylist, savePlaylist, setLike } from "../services/cloudLibrary";
-import type { Playlist, Track } from "../types";
-import { useAuth } from "./auth";
-import { tr } from "../i18n";
+import { fetchLibrary, removePlaylist, savePlaylist, setLike } from "../../services/cloud/libraryApi";
+import type { Playlist, Track } from "../../types";
+import { useAuth } from "../auth/AuthProvider";
+import { tr } from "../../i18n";
 
 /**
  * Local persistence behind a small interface – swap for Supabase later

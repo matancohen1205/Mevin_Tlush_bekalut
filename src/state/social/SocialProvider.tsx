@@ -1,8 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { DEMO_TRACKS } from "../services/music/demo";
-import { SEED_USERS, seedNotifs, seedPosts } from "../services/seed";
-import type { Comment, Notif, Post, Profile, Track } from "../types";
-import { tr } from "../i18n";
+import { DEMO_TRACKS } from "../../services/music/demo";
+import { SEED_USERS, seedNotifs, seedPosts } from "../../data/seed";
+import type { Comment, Notif, Post, Profile, Track } from "../../types";
+import { tr } from "../../i18n";
 
 /**
  * Social layer. Runs on localStorage with a simulated community so the whole

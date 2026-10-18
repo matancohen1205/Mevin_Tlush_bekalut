@@ -1,5 +1,5 @@
-import { DEMO_TRACKS } from "./music/demo";
-import type { Notif, Post, Profile, Track } from "../types";
+import { DEMO_TRACKS } from "../../services/music/demo";
+import type { Notif, Post, Profile, Track } from "../../types";
 
 /**
  * Fictional community used until the Supabase backend is connected.

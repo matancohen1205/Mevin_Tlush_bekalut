@@ -1,10 +1,10 @@
 import { useRef } from "react";
-import { usePlayer } from "../state/player";
-import { useLibrary } from "../state/library";
-import { Icon } from "./Icon";
-import { Waveform } from "./Waveform";
-import { useDialog } from "./useDialog";
-import { tr, useLang } from "../i18n";
+import { usePlayer } from "../../state/player/PlayerProvider";
+import { useLibrary } from "../../state/library/LibraryProvider";
+import { Icon } from "../common/Icon";
+import { Waveform } from "../common/Waveform";
+import { useDialog } from "../../hooks/useDialog";
+import { tr, useLang } from "../../i18n";
 
 const SOURCE = { itunes: "תצוגה מקדימה של 30 שניות · באדיבות Apple Music", audius: "שיר מלא · באדיבות Audius", demo: "שיר דמה שנוצר במחשב" } as const;
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;

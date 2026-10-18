@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { COUNTRIES, GENRES, music, type Result } from "../services/music";
-import { usePrefs } from "../state/prefs";
-import { Icon } from "../components/Icon";
-import { RowSkeletons } from "../components/Skeleton";
-import { TrackRow } from "../components/Track";
+import { usePrefs } from "../state/prefs/PrefsProvider";
+import { Icon } from "../components/common/Icon";
+import { RowSkeletons } from "../components/common/Skeleton";
+import { TrackRow } from "../components/tracks/Track";
 import { tr, useLang } from "../i18n";
 
 export function Search() {

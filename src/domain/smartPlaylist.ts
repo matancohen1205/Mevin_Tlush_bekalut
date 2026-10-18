@@ -1,5 +1,5 @@
 import type { Track } from "../types";
-import { music, type Source } from "./music";
+import { music, type Source } from "../services/music";
 
 /**
  * Rule-based playlist builder: maps a free-text description (Hebrew/English)

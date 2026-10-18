@@ -1,13 +1,13 @@
 import { useState, type ReactNode } from "react";
-import { useLibrary } from "../state/library";
-import { usePlayer } from "../state/player";
-import { useSocial } from "../state/social";
-import { useUi } from "../state/ui";
-import type { Track } from "../types";
-import { Avatar, timeAgo } from "./Avatar";
-import { useDialog } from "./useDialog";
-import { Icon } from "./Icon";
-import { tr, useLang } from "../i18n";
+import { useLibrary } from "../../state/library/LibraryProvider";
+import { usePlayer } from "../../state/player/PlayerProvider";
+import { useSocial } from "../../state/social/SocialProvider";
+import { useUi } from "../../state/ui/UiProvider";
+import type { Track } from "../../types";
+import { Avatar, timeAgo } from "../common/Avatar";
+import { useDialog } from "../../hooks/useDialog";
+import { Icon } from "../common/Icon";
+import { tr, useLang } from "../../i18n";
 
 export function Modal({ title, children }: { title: string; children: ReactNode }) {
   useLang();

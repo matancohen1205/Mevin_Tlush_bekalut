@@ -1,8 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { tr } from "../i18n";
-import { synthDataUrl, synthUrl } from "../services/music/synth";
-import type { Track } from "../types";
-import { useUi } from "./ui";
+import { tr } from "../../i18n";
+import { synthDataUrl, synthUrl } from "../../services/music/synth";
+import type { Track } from "../../types";
+import { useUi } from "../ui/UiProvider";
 
 export type RepeatMode = "off" | "all" | "one";
 

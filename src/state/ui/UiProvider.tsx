@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { tr } from "../i18n";
-import type { Track } from "../types";
+import { tr } from "../../i18n";
+import type { Track } from "../../types";
 
 export type Sheet =
   | { kind: "add"; track: Track }

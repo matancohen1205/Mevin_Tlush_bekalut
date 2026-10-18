@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useAuth } from "../state/auth";
-import { useDialog } from "./useDialog";
-import { LangSwitch } from "./LangSwitch";
-import { Logo } from "./Logo";
-import { tr, useLang } from "../i18n";
+import { useAuth } from "../../state/auth/AuthProvider";
+import { useDialog } from "../../hooks/useDialog";
+import { LangSwitch } from "../common/LangSwitch";
+import { Logo } from "../common/Logo";
+import { tr, useLang } from "../../i18n";
 
 export function AuthScreen() {
   useLang();

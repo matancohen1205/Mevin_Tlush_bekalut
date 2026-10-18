@@ -1,9 +1,9 @@
-import { Avatar } from "../components/Avatar";
-import { Icon } from "../components/Icon";
-import { PostCard } from "../components/PostCard";
-import { usePlayer } from "../state/player";
-import { useSocial } from "../state/social";
-import { useUi } from "../state/ui";
+import { Avatar } from "../components/common/Avatar";
+import { Icon } from "../components/common/Icon";
+import { PostCard } from "../components/social/PostCard";
+import { usePlayer } from "../state/player/PlayerProvider";
+import { useSocial } from "../state/social/SocialProvider";
+import { useUi } from "../state/ui/UiProvider";
 import { tr, useLang } from "../i18n";
 
 export function UserProfile({ id }: { id: string }) {

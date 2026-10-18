@@ -1,4 +1,4 @@
-import { useI18n } from "../i18n";
+import { useI18n } from "../../i18n";
 
 /** Switches between Hebrew (RTL) and English (LTR). The label names the language you will get. */
 export function LangSwitch({ className = "chip" }: { className?: string }) {

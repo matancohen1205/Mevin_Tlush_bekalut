@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { Avatar, timeAgo } from "../components/Avatar";
-import { Icon } from "../components/Icon";
-import { useSocial } from "../state/social";
-import { useUi } from "../state/ui";
+import { Avatar, timeAgo } from "../components/common/Avatar";
+import { Icon } from "../components/common/Icon";
+import { useSocial } from "../state/social/SocialProvider";
+import { useUi } from "../state/ui/UiProvider";
 import { tr, useLang } from "../i18n";
 
 const TEXT = { follow: "התחיל/ה לעקוב אחריך", like: "אהב/ה את השיתוף שלך", comment: "הגיב/ה על השיתוף שלך", accepted: "אישר/ה את בקשת המעקב שלך" } as const;

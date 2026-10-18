@@ -1,10 +1,10 @@
-import type { Track } from "../types";
-import { useLibrary } from "../state/library";
-import { usePlayer } from "../state/player";
-import { useUi } from "../state/ui";
-import { Icon } from "./Icon";
-import { Waveform } from "./Waveform";
-import { tr, useLang } from "../i18n";
+import type { Track } from "../../types";
+import { useLibrary } from "../../state/library/LibraryProvider";
+import { usePlayer } from "../../state/player/PlayerProvider";
+import { useUi } from "../../state/ui/UiProvider";
+import { Icon } from "../common/Icon";
+import { Waveform } from "../common/Waveform";
+import { tr, useLang } from "../../i18n";
 
 export function TrackCard({ track, queue }: { track: Track; queue: Track[] }) {
   useLang();

@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { generatePlaylist } from "../services/aiPlaylist";
-import { useLibrary } from "../state/library";
-import { usePrefs } from "../state/prefs";
-import { useUi } from "../state/ui";
-import { Icon } from "./Icon";
-import { CommentsSheet, ComposeSheet, EditProfileSheet, MoreSheet, Modal } from "./SocialSheets";
-import { tr, useLang } from "../i18n";
+import { generatePlaylist } from "../../domain/smartPlaylist";
+import { useLibrary } from "../../state/library/LibraryProvider";
+import { usePrefs } from "../../state/prefs/PrefsProvider";
+import { useUi } from "../../state/ui/UiProvider";
+import { Icon } from "../common/Icon";
+import { CommentsSheet, ComposeSheet, EditProfileSheet, MoreSheet, Modal } from "../social/SocialSheets";
+import { tr, useLang } from "../../i18n";
 
 const IDEAS = ["נסיעה בלילה עם רוק רגוע", "אימון אנרגטי בקיץ", "ריכוז ולימודים", "ערב רומנטי עם ג׳אז"];
 
@@ -24,7 +24,7 @@ export function Sheets() {
   );
 }
 
-function AddSheet({ track }: { track: import("../types").Track }) {
+function AddSheet({ track }: { track: import("../../types").Track }) {
   useLang();
   const { playlists, addToPlaylist, createPlaylist } = useLibrary();
   const { setSheet, showToast } = useUi();

@@ -1,6 +1,6 @@
-import { usePlayer } from "../state/player";
-import { Icon } from "./Icon";
-import { tr, useLang } from "../i18n";
+import { usePlayer } from "../../state/player/PlayerProvider";
+import { Icon } from "../common/Icon";
+import { tr, useLang } from "../../i18n";
 
 export function MiniPlayer() {
   useLang();

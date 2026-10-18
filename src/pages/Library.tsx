@@ -1,9 +1,9 @@
 import { useRef, useState } from "react";
-import { useLibrary } from "../state/library";
-import { usePlayer } from "../state/player";
-import { useUi } from "../state/ui";
-import { Icon } from "../components/Icon";
-import { TrackRow } from "../components/Track";
+import { useLibrary } from "../state/library/LibraryProvider";
+import { usePlayer } from "../state/player/PlayerProvider";
+import { useUi } from "../state/ui/UiProvider";
+import { Icon } from "../components/common/Icon";
+import { TrackRow } from "../components/tracks/Track";
 import type { Playlist } from "../types";
 import { tr, useLang } from "../i18n";
 
