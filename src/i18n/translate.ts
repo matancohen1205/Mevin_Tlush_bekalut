@@ -34,5 +34,21 @@ export function tr(key: string, vars?: Record<string, string | number>): string 
   return text;
 }
 
+/** Hebrew singular forms for count-based texts ("{n} שירים" → "שיר אחד"). */
+const HEBREW_ONE: Record<string, string> = {
+  "{n} שירים": "שיר אחד",
+  "{n} משתפי פעולה": "משתף/ת פעולה אחד/ת",
+};
+
+/** Count-aware translation: uses the singular form for n = 1 (English: the `key|one` entry), else the normal text with {n}. */
+export function trn(key: string, n: number): string {
+  if (n === 1) {
+    if (current === "he") return HEBREW_ONE[key] ?? tr(key, { n });
+    const one = en[`${key}|one`];
+    if (one) return one;
+  }
+  return tr(key, { n });
+}
+
 /** BCP-47 locale for number/date formatting in the current language. */
 export const locale = (): string => (current === "he" ? "he-IL" : "en-US");

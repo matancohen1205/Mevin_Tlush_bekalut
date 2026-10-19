@@ -1,6 +1,6 @@
 /** Playlist page header: cover plus title/description (or the edit fields). */
 import type { Playlist } from "../../types";
-import { tr, useLang } from "../../i18n";
+import { tr, useLang, trn } from "../../i18n";
 import type { usePlaylistEditor } from "../../state/library";
 import { PlaylistCover } from "./PlaylistCover";
 
@@ -22,7 +22,7 @@ export function PlaylistHeader({ playlist, editor }: { playlist: Playlist; edito
         <div style={{ flex: 1, minWidth: 0 }}>
           <h1 className="page-title" style={{ fontSize: 24 }}>{playlist.title}</h1>
           {playlist.description && <p className="muted">{playlist.description}</p>}
-          <p className="muted">{tr("{n} שירים", { n: playlist.tracks.length })}</p>
+          <p className="muted">{trn("{n} שירים", playlist.tracks.length)}{playlist.collaborators.length > 0 && ` · ${trn("{n} משתפי פעולה", playlist.collaborators.length)}`}</p>
         </div>
       )}
     </div>

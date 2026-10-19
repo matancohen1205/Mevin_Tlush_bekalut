@@ -31,6 +31,7 @@ export const ICON_PATHS: Record<string, string> = {
   more: "M5 12h.01M12 12h.01M19 12h.01",
   flag: "M5 21V4M5 4h12l-2 4 2 4H5",
   userplus: "M10 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM3 20c0-3.3 3-5 7-5s7 1.7 7 5M19 8v6M16 11h6",
+  link: "M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1",
   grip: "M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01",
 };
 

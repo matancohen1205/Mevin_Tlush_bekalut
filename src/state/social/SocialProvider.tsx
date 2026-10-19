@@ -7,7 +7,7 @@ import { SocialContext, type SocialApi } from "./SocialContext";
 import { scheduleReactions } from "./simulatedReactions";
 import { createQueries } from "./socialQueries";
 import { freshSocial, loadSocial, saveSocial } from "./socialStorage";
-import { useTimers } from "./useTimers";
+import { useTimers } from "../../hooks/useTimers";
 
 const FOLLOW_ACCEPT_DELAY_MS = 3000;
 /** Short random id for posts, comments and notifications. */
@@ -52,6 +52,7 @@ export function SocialProvider({ children }: { children: ReactNode }) {
       toggleLike: (postId) => edit((d) => updatePost(d, postId, (p) => togglePostLike(p))),
       addComment: (postId, body) => edit((d) => updatePost(d, postId, (p) => withComment(p, { id: newId(), authorId: "me", body, createdAt: Date.now() }))),
       markRead: () => edit(markAllRead),
+      notify,
       reset: () => setS(freshSocial()),
     };
   }, [s, later, notify]);

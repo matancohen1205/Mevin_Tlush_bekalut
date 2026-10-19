@@ -1,5 +1,5 @@
 /** Selectable lists used by the share dialog: songs or playlists. */
-import { tr, useLang } from "../../i18n";
+import { tr, useLang, trn } from "../../i18n";
 import type { Playlist, Track } from "../../types";
 import { Icon } from "../common/Icon";
 
@@ -41,7 +41,7 @@ export function PlaylistPicker({ playlists, selectedId, onPick }: PlaylistPicker
     <div className="rows" style={{ marginTop: 12 }}>
       {playlists.map((p) => (
         <button key={p.id} className="row" data-active={selectedId === p.id} onClick={() => onPick(p.id)}>
-          <span className="meta"><div className="t">{p.title}</div><div className="a">{tr("{n} שירים", { n: p.tracks.length })}</div></span>
+          <span className="meta"><div className="t">{p.title}</div><div className="a">{trn("{n} שירים", p.tracks.length)}</div></span>
           {selectedId === p.id && <Icon name="check" />}
         </button>
       ))}

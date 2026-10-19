@@ -16,6 +16,8 @@ export function buildPlaylist(title: string, fallbackTitle: string, id: string, 
     visibility: opts.visibility ?? "private",
     tracks: opts.tracks ?? [],
     createdAt: now,
+    collaborators: [],
+    addedBy: {},
   };
 }
 

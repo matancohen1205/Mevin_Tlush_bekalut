@@ -29,6 +29,9 @@ export async function fetchLibrary(uid: string): Promise<CloudLibrary> {
       description: p.description,
       visibility: p.visibility as Playlist["visibility"],
       createdAt: Date.parse(p.created_at),
+      // collaborators arrive with the cloud community (they need real user accounts); solo playlists for now
+      collaborators: [],
+      addedBy: {},
       tracks: [...(p.playlist_tracks as { track: Track; position: number }[])].sort((a, b) => a.position - b.position).map((r) => r.track),
     })),
   };

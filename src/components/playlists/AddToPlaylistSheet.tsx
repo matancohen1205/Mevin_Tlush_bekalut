@@ -1,6 +1,6 @@
 /** Dialog for adding one track to an existing playlist, or to a new one created on the spot. */
 import { useState } from "react";
-import { tr, useLang } from "../../i18n";
+import { tr, useLang, trn } from "../../i18n";
 import { useLibrary } from "../../state/library";
 import { useUi } from "../../state/ui";
 import type { Track } from "../../types";
@@ -29,7 +29,7 @@ export function AddToPlaylistSheet({ track }: { track: Track }) {
           const has = p.tracks.some((t) => t.id === track.id);
           return (
             <button key={p.id} className="row" disabled={has} onClick={() => addTo(p.id, p.title)}>
-              <span className="meta"><div className="t">{p.title}</div><div className="a">{tr("{n} שירים", { n: p.tracks.length })}</div></span>
+              <span className="meta"><div className="t">{p.title}</div><div className="a">{trn("{n} שירים", p.tracks.length)}</div></span>
               {has && <Icon name="check" />}
             </button>
           );

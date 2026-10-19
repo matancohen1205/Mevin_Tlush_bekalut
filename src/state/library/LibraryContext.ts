@@ -12,7 +12,10 @@ export interface LibraryApi {
   createPlaylist: (title: string, options?: NewPlaylistOptions) => string;
   updatePlaylist: (id: string, patch: Partial<Pick<Playlist, "title" | "description" | "visibility">>) => void;
   deletePlaylist: (id: string) => void;
-  addToPlaylist: (id: string, track: Track) => void;
+  /** Adds a track; `addedBy` is the collaborator adding it (defaults to the owner). */
+  addToPlaylist: (id: string, track: Track, addedBy?: string) => void;
+  inviteCollaborator: (id: string, userId: string) => void;
+  removeCollaborator: (id: string, userId: string) => void;
   removeFromPlaylist: (id: string, trackId: string) => void;
   reorderPlaylist: (id: string, from: number, to: number) => void;
 }

@@ -1,4 +1,5 @@
 /** Local persistence of the library (liked songs + playlists). */
+import { withCollaborationDefaults } from "../../domain/collaboration";
 import { readJson, writeJson } from "../../services/storage/localStore";
 import type { Playlist, Track } from "../../types";
 
@@ -13,7 +14,8 @@ const LEGACY_LIKED_KEY = "wavely.liked.v1";
 /** Loads the saved library, migrating the old liked-only format if that is all there is. */
 export function loadLibrary(): LibrarySnapshot {
   const saved = readJson<LibrarySnapshot | null>(KEY, null);
-  return saved ?? { liked: readJson<Track[]>(LEGACY_LIKED_KEY, []), playlists: [] };
+  if (!saved) return { liked: readJson<Track[]>(LEGACY_LIKED_KEY, []), playlists: [] };
+  return { ...saved, playlists: saved.playlists.map(withCollaborationDefaults) };
 }
 
 /** Saves the library. */

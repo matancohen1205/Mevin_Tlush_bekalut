@@ -1,6 +1,6 @@
 /** Ephemeral UI state shared across the app: open dialog, current sub-page, toast message. */
 import { createContext, useContext } from "react";
-import type { Track } from "../../types";
+import type { SharePayload, Track } from "../../types";
 
 export type Sheet =
   | { kind: "add"; track: Track }
@@ -8,6 +8,8 @@ export type Sheet =
   | { kind: "comments"; postId: string }
   | { kind: "compose" }
   | { kind: "editProfile" }
+  | { kind: "collab"; playlistId: string }
+  | { kind: "shared"; payload: SharePayload }
   | { kind: "more"; postId?: string; userId: string }
   | null;
 

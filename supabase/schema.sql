@@ -38,6 +38,14 @@ create table if not exists public.playlist_tracks (
   primary key (playlist_id, track_id)
 );
 
+create table if not exists public.playlist_collaborators (
+  playlist_id uuid not null references public.playlists(id) on delete cascade,
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (playlist_id, user_id)
+);
+alter table public.playlist_tracks add column if not exists added_by uuid references public.profiles(id) on delete set null;
+
 create table if not exists public.follows (
   follower_id uuid not null references public.profiles(id) on delete cascade,
   followee_id uuid not null references public.profiles(id) on delete cascade,
@@ -82,7 +90,7 @@ create table if not exists public.comments (
 create table if not exists public.notifications (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references public.profiles(id) on delete cascade,
-  type text not null check (type in ('follow', 'like', 'comment', 'accepted')),
+  type text not null check (type in ('follow', 'like', 'comment', 'accepted', 'joined', 'added')),
   actor_id uuid not null references public.profiles(id) on delete cascade,
   post_id uuid references public.posts(id) on delete cascade,
   read boolean not null default false,
@@ -150,6 +158,7 @@ alter table public.liked_tracks    enable row level security;
 alter table public.playlists       enable row level security;
 alter table public.playlist_tracks enable row level security;
 alter table public.follows         enable row level security;
+alter table public.playlist_collaborators enable row level security;
 alter table public.blocks          enable row level security;
 alter table public.posts           enable row level security;
 alter table public.post_likes      enable row level security;
@@ -185,6 +194,19 @@ drop policy if exists pltracks_write on public.playlist_tracks;
 create policy pltracks_write on public.playlist_tracks for all to authenticated
   using (exists (select 1 from public.playlists p where p.id = playlist_id and p.owner_id = auth.uid()))
   with check (exists (select 1 from public.playlists p where p.id = playlist_id and p.owner_id = auth.uid()));
+
+-- collaborators: the owner manages the list; collaborators can see it
+drop policy if exists collab_select on public.playlist_collaborators;
+create policy collab_select on public.playlist_collaborators for select to authenticated
+  using (user_id = auth.uid() or exists (select 1 from public.playlists p where p.id = playlist_id and p.owner_id = auth.uid()));
+drop policy if exists collab_write on public.playlist_collaborators;
+create policy collab_write on public.playlist_collaborators for all to authenticated
+  using (exists (select 1 from public.playlists p where p.id = playlist_id and p.owner_id = auth.uid()))
+  with check (exists (select 1 from public.playlists p where p.id = playlist_id and p.owner_id = auth.uid()));
+-- collaborators may add tracks to the playlists they were invited to
+drop policy if exists pltracks_collab_insert on public.playlist_tracks;
+create policy pltracks_collab_insert on public.playlist_tracks for insert to authenticated
+  with check (added_by = auth.uid() and exists (select 1 from public.playlist_collaborators c where c.playlist_id = playlist_tracks.playlist_id and c.user_id = auth.uid()));
 
 -- follows: private profiles can only be followed through a pending request
 drop policy if exists follows_select on public.follows;

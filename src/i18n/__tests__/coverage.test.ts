@@ -18,7 +18,7 @@ function sourceFiles(dir: string): string[] {
 describe("English dictionary coverage", () => {
   it("has a translation for every Hebrew string passed to tr() or showToast()", () => {
     const missing = new Set<string>();
-    const call = /\b(?:tr|showToast)\(\s*"((?:[^"\\]|\\.)*)"/g;
+    const call = /\b(?:tr|trn|showToast)\(\s*"((?:[^"\\]|\\.)*)"/g;
     for (const file of sourceFiles(SRC)) {
       for (const [, text] of readFileSync(file, "utf8").matchAll(call)) {
         if (HEBREW.test(text) && !(text in en)) missing.add(text);

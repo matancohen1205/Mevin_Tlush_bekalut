@@ -1,6 +1,7 @@
 /** Actions on a post that leave the feed: copy a share text, or save a shared playlist to the library. */
 import { useCallback } from "react";
 import { tr } from "../../i18n";
+import { copyText } from "../../services/browser/clipboard";
 import type { Post } from "../../types";
 import { useLibrary } from "../library";
 import { useUi } from "../ui";
@@ -14,12 +15,7 @@ export function usePostSharing() {
   const copyLink = useCallback(
     async (post: Post) => {
       const text = `${post.playlist?.title ?? `${post.track?.title} – ${post.track?.artist}`} · Wavely`;
-      try {
-        await navigator.clipboard.writeText(text);
-        showToast("הקישור הועתק");
-      } catch {
-        showToast(text);
-      }
+      showToast((await copyText(text)) ? "הקישור הועתק" : text);
     },
     [showToast],
   );

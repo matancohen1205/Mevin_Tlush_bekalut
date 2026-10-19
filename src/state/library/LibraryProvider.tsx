@@ -1,6 +1,7 @@
 /** Library state: applies domain rules to liked songs and playlists, persists locally, syncs to the cloud. */
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
-import { addTrack, buildPlaylist, isLiked, removeTrack, reorderTracks, toggleLiked } from "../../domain/playlists";
+import { addTrackAs, inviteCollaborator, removeCollaborator } from "../../domain/collaboration";
+import { buildPlaylist, isLiked, removeTrack, reorderTracks, toggleLiked } from "../../domain/playlists";
 import { tr } from "../../i18n";
 import type { Playlist } from "../../types";
 import { LibraryContext, type LibraryApi } from "./LibraryContext";
@@ -31,7 +32,9 @@ export function LibraryProvider({ children }: { children: ReactNode }) {
       },
       updatePlaylist: (id, patch) => editPlaylist(id, (p) => ({ ...p, ...patch })),
       deletePlaylist: (id) => editPlaylists((list) => list.filter((p) => p.id !== id)),
-      addToPlaylist: (id, track) => editPlaylist(id, (p) => addTrack(p, track)),
+      addToPlaylist: (id, track, addedBy) => editPlaylist(id, (p) => addTrackAs(p, track, addedBy)),
+      inviteCollaborator: (id, userId) => editPlaylist(id, (p) => inviteCollaborator(p, userId)),
+      removeCollaborator: (id, userId) => editPlaylist(id, (p) => removeCollaborator(p, userId)),
       removeFromPlaylist: (id, trackId) => editPlaylist(id, (p) => removeTrack(p, trackId)),
       reorderPlaylist: (id, from, to) => editPlaylist(id, (p) => reorderTracks(p, from, to)),
     }),

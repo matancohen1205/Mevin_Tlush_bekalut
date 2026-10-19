@@ -1,6 +1,6 @@
 /** Community API (profiles, follows, feed actions, notifications) and its React context. */
 import { createContext, useContext } from "react";
-import type { NewPost } from "../../domain/socialState";
+import type { NewNotif, NewPost } from "../../domain/socialState";
 import type { Profile, SocialSnapshot, Track } from "../../types";
 
 export interface SharedPlaylistView {
@@ -26,6 +26,8 @@ export interface SocialApi extends SocialSnapshot {
   toggleLike: (postId: string) => void;
   addComment: (postId: string, body: string) => void;
   markRead: () => void;
+  /** Adds a notification for the current user (used by the demo collaborators). */
+  notify: (n: NewNotif) => void;
   /** Restores the demo community to its starting state. */
   reset: () => void;
 }

@@ -7,6 +7,7 @@ import { Onboarding } from "../components/onboarding/Onboarding";
 import { FullPlayer } from "../components/player/FullPlayer";
 import { MiniPlayer } from "../components/player/MiniPlayer";
 import { useLang } from "../i18n";
+import { useDemoCollaborators, useIncomingShare } from "../state/collab";
 import { useSocial } from "../state/social";
 import { useUi } from "../state/ui";
 import { PageRouter } from "./PageRouter";
@@ -17,6 +18,8 @@ export function Shell() {
   const [tab, setTab] = useState<Tab>("home");
   const { setRoute } = useUi();
   const { unread } = useSocial();
+  useIncomingShare();
+  useDemoCollaborators();
 
   return (
     <div className="app">

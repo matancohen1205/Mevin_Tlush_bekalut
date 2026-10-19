@@ -9,6 +9,8 @@ const TEXT = {
   like: "אהב/ה את השיתוף שלך",
   comment: "הגיב/ה על השיתוף שלך",
   accepted: "אישר/ה את בקשת המעקב שלך",
+  joined: "הצטרף/ה לפלייליסט השיתופי שלך",
+  added: "הוסיף/ה שיר לפלייליסט שלך",
 } as const;
 
 /** Unread rows are highlighted; `onOpen` handles the tap. */

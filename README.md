@@ -15,7 +15,7 @@ A music player and social network in soft blue tones. Browse charts from differe
 ## Features
 - **Player:** queue with drag-to-reorder, shuffle, repeat, seek, volume, buffering state, auto-skip of unplayable tracks, lock-screen controls (Media Session).
 - **Music sources** behind one `MusicProvider` interface: Apple charts (30 s previews, per country), Audius (full-length tracks from independent artists), and generated demo songs that play with no network.
-- **Playlists:** create, edit, reorder, public/private; "smart create" turns a sentence such as *night drive with mellow rock* into a playlist (rule-based today, the function is isolated so an LLM can replace it).
+- **Playlists:** create, edit, reorder, public/private, **collaborative** (invite friends; every song shows who added it) and **shareable by link** (the link carries the playlist, so the receiver can preview and save it with no backend); "smart create" turns a sentence such as *night drive with mellow rock* into a playlist (rule-based today, the function is isolated so an LLM can replace it).
 - **Social:** feed (following / discover), posts of songs and playlists, likes, comments, profiles, follow requests for private profiles, notifications, block and report.
 - **Quality:** PWA with offline shell, Hebrew + English, axe-core clean on the main screens in light and dark, keyboard focus handling in dialogs, responsive from phone to desktop.
 

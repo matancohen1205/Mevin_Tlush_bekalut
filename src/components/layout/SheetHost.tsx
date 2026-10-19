@@ -2,6 +2,8 @@
 import { useUi } from "../../state/ui";
 import { AddToPlaylistSheet } from "../playlists/AddToPlaylistSheet";
 import { NewPlaylistSheet } from "../playlists/NewPlaylistSheet";
+import { CollaboratorsSheet } from "../playlists/CollaboratorsSheet";
+import { SharedPlaylistSheet } from "../playlists/SharedPlaylistSheet";
 import { CommentsSheet } from "../social/CommentsSheet";
 import { ComposeSheet } from "../social/ComposeSheet";
 import { EditProfileSheet } from "../social/EditProfileSheet";
@@ -17,6 +19,8 @@ export function SheetHost() {
       {sheet?.kind === "comments" && <CommentsSheet postId={sheet.postId} />}
       {sheet?.kind === "compose" && <ComposeSheet />}
       {sheet?.kind === "editProfile" && <EditProfileSheet />}
+      {sheet?.kind === "collab" && <CollaboratorsSheet playlistId={sheet.playlistId} />}
+      {sheet?.kind === "shared" && <SharedPlaylistSheet payload={sheet.payload} />}
       {sheet?.kind === "more" && <MoreSheet postId={sheet.postId} userId={sheet.userId} />}
       {toast && <div className="toast" role="status">{toast}</div>}
     </>

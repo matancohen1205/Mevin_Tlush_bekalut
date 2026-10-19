@@ -1,6 +1,6 @@
 /** The user's playlists as rows; selecting one opens it. */
 import type { Playlist } from "../../types";
-import { tr, useLang } from "../../i18n";
+import { tr, useLang, trn } from "../../i18n";
 import { PlaylistCover } from "./PlaylistCover";
 
 /** Empty state included. */
@@ -14,7 +14,7 @@ export function PlaylistList({ playlists, onOpen }: { playlists: Playlist[]; onO
           <PlaylistCover tracks={p.tracks} />
           <span className="meta">
             <div className="t">{p.title}</div>
-            <div className="a">{tr("{n} שירים", { n: p.tracks.length })} · {p.visibility === "public" ? tr("ציבורי") : tr("פרטי")}</div>
+            <div className="a">{trn("{n} שירים", p.tracks.length)} · {p.visibility === "public" ? tr("ציבורי") : tr("פרטי")}</div>
           </span>
         </button>
       ))}

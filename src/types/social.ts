@@ -38,7 +38,7 @@ export interface Post {
 
 export interface Notif {
   id: string;
-  type: "follow" | "like" | "comment" | "accepted";
+  type: "follow" | "like" | "comment" | "accepted" | "joined" | "added";
   actorId: string;
   postId?: string;
   createdAt: number;
